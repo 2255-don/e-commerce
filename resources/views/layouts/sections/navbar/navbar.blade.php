@@ -50,6 +50,28 @@
                 <!-- /Search -->
 
                 <ul class="navbar-nav flex-row align-items-center ms-auto">
+                    <!-- Language -->
+                    <li class="nav-item dropdown-language dropdown me-2 me-xl-0">
+                        <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                            <i class='fi fi-{{ (session()->get('locale') ?? app()->getLocale()) == 'fr' ? 'fr' : 'us' }} fis rounded-circle me-1 fs-3'></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="{{ url('lang/en') }}" data-language="en">
+                                    <i class="fi fi-us fis rounded-circle me-1 fs-3"></i>
+                                    <span class="align-middle">English</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ url('lang/fr') }}" data-language="fr">
+                                    <i class="fi fi-fr fis rounded-circle me-1 fs-3"></i>
+                                    <span class="align-middle">French</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <!--/ Language -->
+
                     <!-- User -->
                     <li class="nav-item navbar-dropdown dropdown-user dropdown">
                         <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);"
