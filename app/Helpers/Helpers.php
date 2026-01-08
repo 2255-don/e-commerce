@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
+use PSpell\Config as PSpellConfig;
 
 class Helpers
 {
