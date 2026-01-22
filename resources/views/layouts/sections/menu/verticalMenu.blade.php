@@ -6,12 +6,11 @@
 
     <!-- ! Hide app brand if navbar-full -->
     @if(!isset($navbarFull))
-        <div class="app-brand demo">
+        <div class="app-brand mb-0 ">
             <a href="{{url('/')}}" class="app-brand-link">
-                <span class="app-brand-logo demo">
-                    @include('_partials.macros', ["height" => 20])
+                <span class="app-brand-logo">
+                    <img src="{{ asset('assets/img/branding/logo.png') }}" alt="Logo" style="max-width: 160px; height: auto; object-fit: contain;">
                 </span>
-                <span class="app-brand-text demo menu-text fw-bold">{{config('variables.templateName')}}</span>
             </a>
 
             <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">

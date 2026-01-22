@@ -15,12 +15,11 @@
 
             <!--  Brand demo (display only for navbar-full and hide on below xl) -->
             @if(isset($navbarFull))
-                <div class="navbar-brand app-brand demo d-none d-xl-flex py-0 me-4">
-                    <a href="{{url('/')}}" class="app-brand-link gap-2">
-                        <span class="app-brand-logo demo">
-                            @include('_partials.macros', ["height" => 20])
+                <div class="navbar-brand app-brand d-none d-xl-flex py-0 me-4">
+                    <a href="{{url('/')}}" class="app-brand-link">
+                        <span class="app-brand-logo">
+                            <img src="{{ asset('assets/img/branding/logo.png') }}" alt="Logo" style="max-width: 150px; height: auto; object-fit: contain;">
                         </span>
-                        <span class="app-brand-text demo menu-text fw-bold">{{config('variables.templateName')}}</span>
                     </a>
                 </div>
             @endif
@@ -108,21 +107,32 @@
                                 <div class="dropdown-divider"></div>
                             </li>
                             <li>
-                                {{-- @if (Auth::check())
+                            <li>
+                                <a class="dropdown-item {{ Route::currentRouteName() === 'profile.show' ? 'active' : '' }}" href="{{ route('profile.show') }}">
+                                    <i class="ti ti-user-check me-2 ti-sm"></i>
+                                    <span class="align-middle">Mon Profil</span>
+                                </a>
+                            </li>
+                            <li>
+                                <div class="dropdown-divider"></div>
+                            </li>
+                            <li>
+                                @if (Auth::check())
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf
                                         <a class="dropdown-item" href="{{ route('logout') }}"
                                             onclick="event.preventDefault(); this.closest('form').submit();">
-                                            <i class='ti ti-logout me-2'></i>
-                                            <span class="align-middle">Logout</span>
+                                            <i class='ti ti-logout me-2 ti-sm'></i>
+                                            <span class="align-middle">Déconnexion</span>
                                         </a>
                                     </form>
                                 @else
                                     <a class="dropdown-item" href="{{ route('login') }}">
-                                        <i class='ti ti-login me-2'></i>
-                                        <span class="align-middle">Login</span>
+                                        <i class='ti ti-login me-2 ti-sm'></i>
+                                        <span class="align-middle">Connexion</span>
                                     </a>
-                                @endif --}}
+                                @endif
+                            </li>
                             </li>
                         </ul>
                     </li>
