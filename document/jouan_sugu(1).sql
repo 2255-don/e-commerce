@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : jeu. 22 jan. 2026 à 12:20
+-- Généré le : ven. 23 jan. 2026 à 13:03
 -- Version du serveur : 8.0.44-0ubuntu0.24.04.2
 -- Version de PHP : 8.3.6
 
@@ -124,6 +124,18 @@ CREATE TABLE `order_items` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `password_reset_tokens`
+--
+
+CREATE TABLE `password_reset_tokens` (
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `portfolios`
 --
 
@@ -155,6 +167,24 @@ CREATE TABLE `products` (
   `is_active` tinyint(1) DEFAULT '1',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `seller_profiles`
+--
+
+CREATE TABLE `seller_profiles` (
+  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `shop_name` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `licence_paid_at` datetime DEFAULT NULL,
+  `licence_expire_at` datetime DEFAULT NULL,
+  `commission_rate` decimal(10,0) DEFAULT NULL,
+  `is_active` tinyint DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `user_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -194,8 +224,18 @@ CREATE TABLE `users` (
   `email_verified_at` timestamp NULL DEFAULT NULL,
   `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `two_factor_secret` text COLLATE utf8mb4_unicode_ci,
+  `two_factor_recovery_codes` text COLLATE utf8mb4_unicode_ci,
+  `two_factor_confirmed_at` text COLLATE utf8mb4_unicode_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `users`
+--
+
+INSERT INTO `users` (`id`, `name`, `email`, `password`, `phone_number`, `role`, `kyc_status`, `kyc_document_path`, `email_verified_at`, `remember_token`, `created_at`, `updated_at`, `two_factor_secret`, `two_factor_recovery_codes`, `two_factor_confirmed_at`) VALUES
+('019be66e-31b8-7246-aa18-66cd159745e0', 'Don manuel jouanelle', 'traorejouanelle22@gmail.com', '$2y$12$I6q5.kN3m/ictlGXodTYnOCnjAvjJttqtbvaP6krXA.27zZg171wq', '90164200', 'user', 'pending', NULL, '2026-01-22 16:00:01', NULL, '2026-01-22 15:59:00', '2026-01-22 16:00:01', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -263,6 +303,12 @@ ALTER TABLE `order_items`
   ADD KEY `fk_items_product` (`product_id`);
 
 --
+-- Index pour la table `password_reset_tokens`
+--
+ALTER TABLE `password_reset_tokens`
+  ADD PRIMARY KEY (`email`);
+
+--
 -- Index pour la table `portfolios`
 --
 ALTER TABLE `portfolios`
@@ -276,6 +322,13 @@ ALTER TABLE `portfolios`
 ALTER TABLE `products`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_products_users` (`seller_id`);
+
+--
+-- Index pour la table `seller_profiles`
+--
+ALTER TABLE `seller_profiles`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_seller_profiles_users1_idx` (`user_id`);
 
 --
 -- Index pour la table `transactions`
@@ -355,6 +408,12 @@ ALTER TABLE `portfolios`
 --
 ALTER TABLE `products`
   ADD CONSTRAINT `fk_products_users` FOREIGN KEY (`seller_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `seller_profiles`
+--
+ALTER TABLE `seller_profiles`
+  ADD CONSTRAINT `fk_seller_profiles_users1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
 -- Contraintes pour la table `transactions`
