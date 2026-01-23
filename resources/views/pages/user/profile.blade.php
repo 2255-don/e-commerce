@@ -40,8 +40,23 @@ $configData = Helper::appClasses();
                 <div class="d-flex align-items-start align-items-sm-center gap-4">
                     <img src="{{ $user->profile_photo_url }}" alt="user-avatar" class="d-block w-px-100 h-px-100 rounded" id="uploadedAvatar" />
                     <div class="button-wrapper">
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            <a href="{{ route('wallet.recharge') }}" class="btn btn-label-success">
+                                <i class="ti ti-wallet me-1"></i> Wallet : {{ number_format($user->wallet->balance ?? 0, 0, ',', ' ') }} FCFA
+                            </a>
+                            
+                            @if($user->sellerProfile && $user->sellerProfile->isLicenseActive())
+                                <button class="btn btn-secondary" disabled>
+                                    <i class="ti ti-badge me-1"></i> Vendeur Actif (Expire le {{ $user->sellerProfile->licence_expire_at->format('d/m/Y') }})
+                                </button>
+                            @else
+                                <a href="{{ route('seller.license') }}" class="btn btn-label-primary">
+                                    <i class="ti ti-shopping-cart me-1"></i> {{ $user->sellerProfile ? 'Renouveler Licence' : 'Devenir Vendeur' }} (5000 FCFA)
+                                </a>
+                            @endif
+                        </div>
                         <label for="upload" class="btn btn-primary me-2 mb-3" tabindex="0">
-                            <span class="d-none d-sm-block">Télécharger une nouvelle photo</span>
+                            <span class="d-none d-sm-block">Changer la photo</span>
                             <i class="ti ti-upload d-block d-sm-none"></i>
                             <input type="file" id="upload" class="account-file-input" hidden accept="image/png, image/jpeg" />
                         </label>
@@ -49,7 +64,6 @@ $configData = Helper::appClasses();
                             <i class="ti ti-refresh-dot d-block d-sm-none"></i>
                             <span class="d-none d-sm-block">Réinitialiser</span>
                         </button>
-                        <div class="text-muted">Autorisé JPG, GIF ou PNG. Taille maximale de 800Ko</div>
                     </div>
                 </div>
             </div>

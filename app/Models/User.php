@@ -61,4 +61,14 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return 'https://ui-avatars.com/api/?name='.urlencode($this->name).'&color=7367f0&background=f8f7ff';
     }
+
+    public function wallet()
+    {
+        return $this->hasOne(Wallet::class);
+    }
+
+    public function sellerProfile()
+    {
+        return $this->hasOne(SellerProfile::class);
+    }
 }
