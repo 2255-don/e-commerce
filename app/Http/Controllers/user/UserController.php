@@ -40,11 +40,19 @@ class UserController extends Controller
                 'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
                 'phone_number' => ['nullable', 'string', 'max:20'],
                 'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+                'shop_name' => ['nullable', 'string', 'max:255'],
             ]);
 
             $user->name = $request->name;
             $user->email = $request->email;
             $user->phone_number = $request->phone_number;
+
+            // Mise à jour du nom de la boutique si applicable
+            if ($request->filled('shop_name') && $user->kyc_status === 'verified' && $user->sellerProfile) {
+                $user->sellerProfile->update([
+                    'shop_name' => $request->shop_name
+                ]);
+            }
 
             if ($request->filled('password')) {
                 $user->password = Hash::make($request->password);

@@ -27,3 +27,16 @@ Route::group(['prefix' => 'seller', 'middleware' => 'auth'], function () {
     Route::post('/license/wallet', [App\Http\Controllers\seller\SellerController::class, 'purchaseWithWallet'])->name('seller.license.wallet');
 });
 
+// KYC Routes
+Route::group(['prefix' => 'kyc', 'middleware' => 'auth'], function () {
+    Route::get('/', [App\Http\Controllers\user\KycController::class, 'showForm'])->name('kyc.form');
+    Route::post('/', [App\Http\Controllers\user\KycController::class, 'store'])->name('kyc.store');
+});
+
+// Admin Routes
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'can:admin-access']], function () {
+    Route::get('/kyc', [App\Http\Controllers\admin\AdminKycController::class, 'index'])->name('admin.kyc.index');
+    Route::post('/kyc/{user}/approve', [App\Http\Controllers\admin\AdminKycController::class, 'approve'])->name('admin.kyc.approve');
+    Route::post('/kyc/{user}/reject', [App\Http\Controllers\admin\AdminKycController::class, 'reject'])->name('admin.kyc.reject');
+});
+

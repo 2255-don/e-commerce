@@ -49,6 +49,17 @@ $configData = Helper::appClasses();
                                 <button class="btn btn-secondary" disabled>
                                     <i class="ti ti-badge me-1"></i> Vendeur Actif (Expire le {{ $user->sellerProfile->licence_expire_at->format('d/m/Y') }})
                                 </button>
+                                
+                                {{-- KYC Status Badge --}}
+                                @if($user->kyc_status === 'verified')
+                                    <span class="badge bg-label-success ms-2"><i class="ti ti-shield-check me-1"></i> Identité Vérifiée</span>
+                                @elseif($user->kyc_status === 'pending')
+                                    <span class="badge bg-label-warning ms-2"><i class="ti ti-clock me-1"></i> KYC en attente</span>
+                                @elseif($user->kyc_status === 'rejected')
+                                    <a href="{{ route('kyc.form') }}" class="btn btn-label-danger ms-2"><i class="ti ti-alert-triangle me-1"></i> KYC Rejeté (Réessayer)</a>
+                                @else
+                                    <a href="{{ route('kyc.form') }}" class="btn btn-label-info ms-2"><i class="ti ti-file-text me-1"></i> Valider mon Identité</a>
+                                @endif
                             @else
                                 <a href="{{ route('seller.license') }}" class="btn btn-label-primary">
                                     <i class="ti ti-shopping-cart me-1"></i> {{ $user->sellerProfile ? 'Renouveler Licence' : 'Devenir Vendeur' }} (5000 FCFA)
@@ -107,6 +118,15 @@ $configData = Helper::appClasses();
                         </div>
                     </div>
                     
+                    @if($user->kyc_status === 'verified' && $user->sellerProfile && $user->sellerProfile->shop_name)
+                    <div class="row">
+                        <div class="mb-3 col-md-12">
+                            <label for="shop_name" class="form-label">Nom de la boutique</label>
+                            <input class="form-control" type="text" id="shop_name" name="shop_name" value="{{ old('shop_name', $user->sellerProfile->shop_name) }}" />
+                        </div>
+                    </div>
+                    @endif
+
                     <hr class="my-4">
                     <h5 class="mb-4">Changer le mot de passe (optionnel)</h5>
                     

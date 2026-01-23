@@ -5,6 +5,17 @@
       "icon": "menu-icon tf-icons ti ti-smart-home",
       "url": "dashboard",
       "slug": "dashboard"
+    },
+    {
+      "menuHeader": "Administration",
+      "adminOnly": true
+    },
+    {
+      "name": "Validation KYC",
+      "icon": "menu-icon tf-icons ti ti-shield-check",
+      "url": "admin/kyc",
+      "slug": "admin-kyc",
+      "adminOnly": true
     }
   ]
 }

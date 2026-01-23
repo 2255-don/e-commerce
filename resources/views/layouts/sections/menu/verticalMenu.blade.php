@@ -25,6 +25,9 @@
 
     <ul class="menu-inner py-1">
         @foreach ($menuData[0]->menu as $menu)
+            @if(isset($menu->adminOnly) && $menu->adminOnly && !Gate::allows('admin-access'))
+                @continue
+            @endif
 
             {{-- adding active and open class if child is active --}}
 
@@ -69,7 +72,13 @@
                         <div>{{ isset($menu->name) ? __($menu->name) : '' }}</div>
                         @isset($menu->badge)
                             <div class="badge bg-label-{{ $menu->badge[0] }} rounded-pill ms-auto">{{ $menu->badge[1] }}</div>
-
+                        @elseif(isset($menu->slug) && $menu->slug === 'admin-kyc')
+                            @php
+                                $kycCount = \App\Models\User::where('kyc_status', 'pending')->count();
+                            @endphp
+                            @if($kycCount > 0)
+                                <div class="badge bg-danger rounded-pill ms-auto">{{ $kycCount }}</div>
+                            @endif
                         @endisset
                     </a>
 
