@@ -29,6 +29,16 @@
                 @continue
             @endif
 
+            @if(isset($menu->sellerOnly) && $menu->sellerOnly)
+                @php
+                    $user = auth()->user();
+                    $isSeller = $user && $user->sellerProfile && $user->sellerProfile->isLicenseActive() && $user->kyc_status === 'verified';
+                @endphp
+                @if(!$isSeller)
+                    @continue
+                @endif
+            @endif
+
             {{-- adding active and open class if child is active --}}
 
             {{-- menu headers --}}
@@ -44,7 +54,11 @@
                     $activeClass = null;
                     $currentRouteName = Route::currentRouteName();
 
-                    if ($currentRouteName === $menu->slug) {
+                    if (is_array($menu->slug)) {
+                        if (in_array($currentRouteName, $menu->slug)) {
+                            $activeClass = 'active';
+                        }
+                    } elseif ($currentRouteName === $menu->slug) {
                         $activeClass = 'active';
                     } elseif (isset($menu->submenu)) {
                         if (gettype($menu->slug) === 'array') {

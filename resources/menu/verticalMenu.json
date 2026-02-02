@@ -7,6 +7,48 @@
       "slug": "dashboard"
     },
     {
+      "menuHeader": "Boutique"
+    },
+    {
+      "name": "Parcourir",
+      "icon": "menu-icon tf-icons ti ti-shopping-bag",
+      "url": "boutique",
+      "slug": "marketplace.index"
+    },
+    {
+      "menuHeader": "Mes Achats"
+    },
+    {
+      "url": "my-orders",
+      "name": "Historique",
+      "icon": "menu-icon tf-icons ti ti-history",
+      "slug": [
+        "user.orders.index",
+        "user.orders.show"
+      ]
+    },
+    {
+      "url": "my-orders/pending",
+      "name": "À Valider",
+      "icon": "menu-icon tf-icons ti ti-truck-delivery",
+      "slug": [
+        "user.orders.pending",
+        "user.orders.show_pending"
+      ],
+      "badge": "warning"
+    },
+    {
+      "menuHeader": "Espace Vendeur",
+      "sellerOnly": true
+    },
+    {
+      "name": "Ma Boutique",
+      "icon": "menu-icon tf-icons ti ti-building-store",
+      "url": "seller/dashboard",
+      "slug": "seller.dashboard",
+      "sellerOnly": true
+    },
+    {
       "menuHeader": "Administration",
       "adminOnly": true
     },

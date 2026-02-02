@@ -62,6 +62,22 @@ class User extends Authenticatable implements MustVerifyEmail
         return 'https://ui-avatars.com/api/?name='.urlencode($this->name).'&color=7367f0&background=f8f7ff';
     }
 
+    public function isSeller()
+    {
+        return $this->user_type === 'seller';
+    }
+
+    public function cartItemsCount()
+    {
+        $cart = $this->cart()->first();
+        return $cart ? $cart->items()->sum('quantity') : 0;
+    }
+
+    public function cart()
+    {
+        return $this->hasOne(\App\Models\Cart::class);
+    }
+
     public function wallet()
     {
         return $this->hasOne(Wallet::class);
