@@ -1,140 +1,175 @@
-@extends('layouts/layoutMaster')
+@extends('layouts.layoutMaster')
 
-@section('title', __('Roles Management'))
+@section('title', 'Gestion des Rôles')
+
+@section('page-style')
+<link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+<style>
+    .role-card {
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--grey-200);
+        padding: 1.75rem;
+        background: white;
+        transition: all var(--transition-smooth);
+        height: 100%;
+    }
+
+    .role-card:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--brand-gold-light);
+    }
+
+    .role-header {
+        display: flex;
+        justify-content-between;
+        align-items-start;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid var(--grey-100);
+    }
+
+    .role-icon {
+        width: 55px;
+        height: 55px;
+        border-radius: var(--radius-md);
+        background: var(--gradient-gold);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        box-shadow: var(--shadow-gold);
+        flex-shrink: 0;
+    }
+
+    .role-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--grey-900);
+        margin-bottom: 0.25rem;
+    }
+
+    .role-description {
+        color: var(--grey-600);
+        font-size: 0.875rem;
+        line-height: 1.6;
+    }
+
+    .role-stats {
+        display: flex;
+        gap: 1.5rem;
+        margin-top: 1rem;
+    }
+
+    .role-stat-item {
+        text-align: center;
+    }
+
+    .role-stat-value {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--brand-gold);
+    }
+
+    .role-stat-label {
+        font-size: 0.75rem;
+        color: var(--grey-600);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .role-actions {
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--grey-100);
+        display: flex;
+        gap: 0.5rem;
+    }
+</style>
+@endsection
 
 @section('content')
-<h4 class="fw-bold py-3 mb-4">
-    <span class="text-muted fw-light">{{ __('Administration') }} /</span> {{ __('Roles') }}
-</h4>
-
-@if (session('success'))
-<div class="alert alert-success alert-dismissible" role="alert">
-    {{ session('success') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-@endif
-
-@if (session('error'))
-<div class="alert alert-danger alert-dismissible" role="alert">
-    {{ session('error') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-@endif
-
-<div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">{{ __('Roles List') }}</h5>
-        <x-feature-link feature="admin.roles.create" route="{{ route('admin.roles.create') }}" class="btn btn-primary">
-            <i class="bx bx-plus me-1"></i> {{ __('Add New Role') }}
-        </x-feature-link>
-    </div>
-    <x-feature-section feature="admin.roles.view-list" showDeniedMessage="true">
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-hover border-top">
-                <thead>
-                    <tr>
-                        <th>{{ __('Role Name') }}</th>
-                        <th>{{ __('Slug') }}</th>
-                        <th>{{ __('Description') }}</th>
-                        <th>{{ __('Users') }}</th>
-                        <th>{{ __('Permissions') }}</th>
-                        <th>{{ __('Actions') }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($roles as $role)
-                    <tr>
-                        <td>
-                            <strong>{{ $role->nom }}</strong>
-                        </td>
-                        <td><code>{{ $role->slug }}</code></td>
-                        <td>
-                            <span class="text-muted">{{ $role->description ?? __('No description') }}</span>
-                        </td>
-                        <td>
-                            <span class="badge" style="background-color: #808080; color: white;">
-                                {{ $role->users_count }} {{ __('users') }}
-                            </span>
-                        </td>
-                        <td>
-                            <span class="badge" style="background-color: #B8860B; color: white;">
-                                {{ $role->permissions_count }} {{ __('permissions') }}
-                            </span>
-                        </td>
-                        <td>
-                            <div class="dropdown">
-                                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                                    <i class="ti ti-dots-vertical"></i>
-                                </button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="{{ route('admin.roles.permissions', $role->id) }}">
-                                        <i class="bx bx-shield me-1"></i> {{ __('Manage Permissions') }}
-                                    </a>
-                                    <a class="dropdown-item" href="{{ route('admin.roles.edit', $role->id) }}">
-                                        <i class="ti ti-pencil me-1"></i> {{ __('Edit') }}
-                                    </a>
-                                    <form action="{{ route('admin.roles.destroy', $role->id) }}" method="POST" class="d-inline delete-form">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="button" class="dropdown-item text-danger delete-btn">
-                                            <i class="ti ti-trash me-1"></i> {{ __('Delete') }}
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="6" class="text-center text-muted py-4">
-                            {{ __('No roles found.') }}
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+<div class="page-header-brand animate-fade-in-up">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="page-title-brand">
+                <i class='bx bxs-shield text-brand-gold'></i>
+                Gestion des Rôles
+            </h2>
+            <p class="page-subtitle-brand">Gérez les rôles et leurs permissions</p>
+        </div>
+        <div>
+            <a href="{{ route('admin.roles.create') }}" class="btn btn-brand-primary">
+                <i class='bx bx-plus-circle'></i>
+                Nouveau Rôle
+            </a>
         </div>
     </div>
-    </x-feature-section>
 </div>
 
-@endsection
+<!-- Roles Grid -->
+<div class="row g-4">
+    @forelse($roles as $index => $role)
+    <div class="col-lg-4 col-md-6">
+        <div class="role-card animate-fade-in-up" style="animation-delay: {{ $index * 0.1 }}s;">
+            <div class="role-header">
+                <div class="flex-grow-1">
+                    <h4 class="role-title">{{ $role->name }}</h4>
+                    <p class="role-description">
+                        {{ $role->description ?? 'Aucune description' }}
+                    </p>
+                </div>
+                <div class="role-icon">
+                    <i class='bx {{ $role->slug === "admin" ? "bxs-crown" : ($role->slug === "seller" ? "bxs-store" : "bxs-user") }}'></i>
+                </div>
+            </div>
 
-@section('vendor-style')
-<link rel="stylesheet" href="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.css') }}" />
-@endsection
+            <div class="role-stats">
+                <div class="role-stat-item">
+                    <div class="role-stat-value">
+                        {{ $role->users()->count() }}
+                    </div>
+                    <div class="role-stat-label">Utilisateurs</div>
+                </div>
+                <div class="role-stat-item">
+                    <div class="role-stat-value">
+                        {{ $role->permissions()->count() }}
+                    </div>
+                    <div class="role-stat-label">Permissions</div>
+                </div>
+            </div>
 
-@section('vendor-script')
-<script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
-@endsection
-
-@section('page-script')
-<script>
-$(document).ready(function() {
-    // Delete confirmation
-    $('.delete-btn').on('click', function(e) {
-        e.preventDefault();
-        const form = $(this).closest('form');
-        
-        Swal.fire({
-            title: '{{ __("Are you sure?") }}',
-            text: "{{ __('This action cannot be undone!') }}",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: '{{ __("Yes, delete it!") }}',
-            cancelButtonText: '{{ __("Cancel") }}',
-            customClass: {
-                confirmButton: 'btn btn-danger me-3',
-                cancelButton: 'btn btn-label-secondary'
-            },
-            buttonsStyling: false
-        }).then((result) => {
-            if (result.isConfirmed) {
-                form.submit();
-            }
-        });
-    });
-});
-</script>
+            <div class="role-actions">
+                <a href="{{ route('admin.roles.permissions', $role->id) }}" 
+                   class="btn btn-brand-outline flex-grow-1">
+                    <i class='bx bx-cog'></i>
+                    Permissions
+                </a>
+                <a href="{{ route('admin.roles.edit', $role->id) }}" 
+                   class="btn btn-icon-brand">
+                    <i class='bx bx-edit'></i>
+                </a>
+                @if(!in_array($role->slug, ['admin', 'super-admin']))
+                <button class="btn btn-icon-brand" 
+                        style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.15) 100%); color: #dc2626;">
+                    <i class='bx bx-trash'></i>
+                </button>
+                @endif
+            </div>
+        </div>
+    </div>
+    @empty
+    <div class="col-12">
+        <div class="text-center py-5">
+            <i class='bx bx-shield-x' style="font-size: 4rem; color: var(--grey-300);"></i>
+            <p class="text-muted mt-3">Aucun rôle trouvé</p>
+            <a href="{{ route('admin.roles.create') }}" class="btn btn-brand-primary mt-2">
+                <i class='bx bx-plus-circle'></i>
+                Créer un rôle
+            </a>
+        </div>
+    </div>
+    @endforelse
+</div>
 @endsection
