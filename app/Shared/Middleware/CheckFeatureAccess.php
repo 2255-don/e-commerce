@@ -2,7 +2,7 @@
 
 namespace Shared\Middleware;
 
-use App\Models\Feature;
+use Modules\Identity\Entities\Feature;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
