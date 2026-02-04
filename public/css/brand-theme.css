@@ -1,0 +1,567 @@
+/*
+|--------------------------------------------------------------------------
+| Jouan-Sugu Brand Theme
+|--------------------------------------------------------------------------
+| Modern, professional design system based on logo colors
+| Colors: Gold (#B8860B, #D4AF37) + Grey (#808080, #505050)
+*/
+
+/* ==================== CSS CUSTOM PROPERTIES ==================== */
+:root {
+    /* Logo Brand Colors */
+    --brand-gold: #B8860B;
+    --brand-gold-light: #D4AF37;
+    --brand-grey: #808080;
+    --brand-grey-dark: #505050;
+
+    /* Extended Gold Palette */
+    --gold-50: #FFF9E6;
+    --gold-100: #FFEDB8;
+    --gold-200: #FFE08D;
+    --gold-300: #FFD362;
+    --gold-400: #E8C04A;
+    --gold-500: #D4AF37;
+    --gold-600: #C39E2A;
+    --gold-700: #B8860B;
+    --gold-800: #996F09;
+    --gold-900: #8B6508;
+
+    /* Extended Grey Palette */
+    --grey-50: #F8F9FA;
+    --grey-100: #E9ECEF;
+    --grey-200: #DEE2E6;
+    --grey-300: #CED4DA;
+    --grey-400: #ADB5BD;
+    --grey-500: #808080;
+    --grey-600: #6C757D;
+    --grey-700: #505050;
+    --grey-800: #343A40;
+    --grey-900: #1E293B;
+
+    /* Semantic Colors */
+    --primary: var(--brand-gold);
+    --primary-light: var(--brand-gold-light);
+    --secondary: var(--brand-grey);
+    --secondary-dark: var(--brand-grey-dark);
+
+    /* Gradients */
+    --gradient-gold: linear-gradient(135deg, #B8860B 0%, #D4AF37 100%);
+    --gradient-gold-vertical: linear-gradient(180deg, #B8860B 0%, #D4AF37 100%);
+    --gradient-grey: linear-gradient(135deg, #505050 0%, #808080 100%);
+    --gradient-bg-light: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    --gradient-gold-subtle: linear-gradient(135deg, rgba(184, 134, 11, 0.1) 0%, rgba(212, 175, 55, 0.15) 100%);
+
+    /* Shadows */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.12);
+    --shadow-xl: 0 12px 40px rgba(0, 0, 0, 0.15);
+    --shadow-gold: 0 8px 25px rgba(184, 134, 11, 0.3);
+    --shadow-gold-lg: 0 12px 35px rgba(184, 134, 11, 0.4);
+
+    /* Border Radius */
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --radius-full: 50px;
+
+    /* Transitions */
+    --transition-fast: 150ms ease;
+    --transition-base: 300ms ease;
+    --transition-slow: 500ms ease;
+    --transition-smooth: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==================== UTILITY CLASSES ==================== */
+
+/* Background Colors */
+.bg-brand-gold {
+    background-color: var(--brand-gold) !important;
+}
+
+.bg-brand-gold-light {
+    background-color: var(--brand-gold-light) !important;
+}
+
+.bg-brand-grey {
+    background-color: var(--brand-grey) !important;
+}
+
+.bg-gradient-gold {
+    background: var(--gradient-gold) !important;
+}
+
+.bg-gradient-grey {
+    background: var(--gradient-grey) !important;
+}
+
+.bg-gradient-subtle {
+    background: var(--gradient-gold-subtle) !important;
+}
+
+/* Text Colors */
+.text-brand-gold {
+    color: var(--brand-gold) !important;
+}
+
+.text-brand-gold-light {
+    color: var(--brand-gold-light) !important;
+}
+
+.text-brand-grey {
+    color: var(--brand-grey) !important;
+}
+
+.text-gradient-gold {
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Border Colors */
+.border-brand-gold {
+    border-color: var(--brand-gold) !important;
+}
+
+.border-brand-grey {
+    border-color: var(--brand-grey) !important;
+}
+
+/* ==================== BUTTONS ==================== */
+
+/* Primary Gold Button */
+.btn-brand-primary {
+    background: var(--gradient-gold);
+    color: white;
+    border: none;
+    padding: 0.65rem 1.75rem;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    transition: all var(--transition-base);
+    box-shadow: var(--shadow-gold);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-brand-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-gold-lg);
+    color: white;
+}
+
+.btn-brand-primary:active {
+    transform: translateY(0);
+}
+
+/* Secondary Grey Button */
+.btn-brand-secondary {
+    background: var(--gradient-grey);
+    color: white;
+    border: none;
+    padding: 0.65rem 1.75rem;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    transition: all var(--transition-base);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-brand-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    color: white;
+}
+
+/* Outline Button */
+.btn-brand-outline {
+    background: transparent;
+    color: var(--brand-gold);
+    border: 2px solid var(--brand-gold);
+    padding: 0.6rem 1.75rem;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    transition: all var(--transition-base);
+}
+
+.btn-brand-outline:hover {
+    background: var(--brand-gold);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-gold);
+}
+
+/* Icon Buttons */
+.btn-icon-brand {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gradient-gold-subtle);
+    color: var(--brand-gold);
+    border: 1px solid rgba(184, 134, 11, 0.2);
+    transition: all var(--transition-base);
+}
+
+.btn-icon-brand:hover {
+    background: var(--gradient-gold);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-gold);
+}
+
+/* ==================== CARDS ==================== */
+
+/* Standard Brand Card */
+.card-brand {
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--grey-200);
+    transition: all var(--transition-smooth);
+    box-shadow: var(--shadow-sm);
+}
+
+.card-brand:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: rgba(184, 134, 11, 0.3);
+}
+
+/* Card with Gold Gradient Header */
+.card-brand-gradient .card-header {
+    background: var(--gradient-gold);
+    color: white;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    padding: 1.25rem 1.5rem;
+    border: none;
+}
+
+.card-brand-gradient {
+    border: none;
+    box-shadow: var(--shadow-md);
+}
+
+/* Stats Card */
+.card-stat {
+    border-radius: var(--radius-lg);
+    padding: 1.75rem;
+    background: white;
+    border: 1px solid var(--grey-200);
+    transition: all var(--transition-smooth);
+    position: relative;
+    overflow: hidden;
+}
+
+.card-stat::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-gold);
+    opacity: 0;
+    transition: opacity var(--transition-base);
+}
+
+.card-stat:hover::before {
+    opacity: 0.05;
+}
+
+.card-stat:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--brand-gold-light);
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: var(--radius-md);
+    background: var(--gradient-gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.75rem;
+    box-shadow: var(--shadow-gold);
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 800;
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0.5rem 0;
+}
+
+.stat-label {
+    color: var(--grey-600);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+/* ==================== BADGES ==================== */
+
+/* Gold Badge */
+.badge-brand-gold {
+    background: var(--gradient-gold);
+    color: white;
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    font-size: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+/* Grey Badge */
+.badge-brand-grey {
+    background: var(--gradient-grey);
+    color: white;
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+
+/* Outline Badge */
+.badge-brand-outline {
+    background: var(--gradient-gold-subtle);
+    color: var(--brand-gold);
+    border: 1px solid rgba(184, 134, 11, 0.3);
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+
+/* Status Badges */
+.badge-status-active {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    font-size: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.badge-status-inactive {
+    background: var(--gradient-grey);
+    color: white;
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+
+.badge-status-pending {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+
+/* ==================== TABLES ==================== */
+
+.table-brand {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.table-brand thead {
+    background: var(--gradient-gold-subtle);
+}
+
+.table-brand thead th {
+    color: var(--brand-gold-700);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    padding: 1rem;
+    border: none;
+}
+
+.table-brand tbody tr {
+    transition: all var(--transition-fast);
+    border-bottom: 1px solid var(--grey-100);
+}
+
+.table-brand tbody tr:hover {
+    background: var(--grey-50);
+    transform: scale(1.01);
+}
+
+.table-brand tbody td {
+    padding: 1rem;
+    vertical-align: middle;
+}
+
+/* ==================== FORMS ==================== */
+
+.form-control-brand {
+    border: 2px solid var(--grey-200);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1rem;
+    transition: all var(--transition-base);
+}
+
+.form-control-brand:focus {
+    border-color: var(--brand-gold);
+    box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.1);
+    outline: none;
+}
+
+.form-label-brand {
+    font-weight: 600;
+    color: var(--grey-700);
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* ==================== ALERTS ==================== */
+
+.alert-brand-success {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.15) 100%);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: var(--radius-md);
+    color: #065f46;
+    padding: 1rem 1.25rem;
+}
+
+.alert-brand-warning {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.15) 100%);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: var(--radius-md);
+    color: #92400e;
+    padding: 1rem 1.25rem;
+}
+
+.alert-brand-info {
+    background: var(--gradient-gold-subtle);
+    border: 1px solid rgba(184, 134, 11, 0.3);
+    border-radius: var(--radius-md);
+    color: var(--brand-gold-900);
+    padding: 1rem 1.25rem;
+}
+
+/* ==================== PAGE HEADERS ==================== */
+
+.page-header-brand {
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--grey-100);
+}
+
+.page-title-brand {
+    font-size: 2rem;
+    font-weight: 800;
+    background: var(--gradient-grey);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+}
+
+.page-subtitle-brand {
+    color: var(--grey-600);
+    font-size: 1rem;
+}
+
+/* ==================== ANIMATIONS ==================== */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInFromLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes pulse-gold {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(184, 134, 11, 0.4);
+    }
+
+    50% {
+        box-shadow: 0 0 0 10px rgba(184, 134, 11, 0);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.6s ease backwards;
+}
+
+.animate-slide-in-left {
+    animation: slideInFromLeft 0.6s ease backwards;
+}
+
+/* ==================== RESPONSIVE ==================== */
+
+@media (max-width: 768px) {
+    .page-title-brand {
+        font-size: 1.5rem;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+    }
+
+    .btn-brand-primary,
+    .btn-brand-secondary,
+    .btn-brand-outline {
+        padding: 0.5rem 1.25rem;
+        font-size: 0.875rem;
+    }
+}
+
+/* ==================== CUSTOM SCROLLBAR ==================== */
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--grey-100);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gradient-gold);
+    border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--brand-gold-700);
+}
