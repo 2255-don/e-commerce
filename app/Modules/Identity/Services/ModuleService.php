@@ -2,7 +2,7 @@
 
 namespace Modules\Identity\Services;
 
-use App\Models\Module;
+use Modules\Identity\Entities\Module;
 use Illuminate\Support\Str;
 
 class ModuleService

@@ -2,8 +2,8 @@
 
 namespace Modules\Identity\Services;
 
-use App\Models\Feature;
-use App\Models\Module;
+use Modules\Identity\Entities\Feature;
+use Modules\Identity\Entities\Module;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
