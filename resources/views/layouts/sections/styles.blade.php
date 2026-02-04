@@ -19,6 +19,9 @@
     class="{{ $configData['hasCustomizer'] ? 'template-customizer-theme-css' : '' }}" />
 <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}" />
 
+<!-- Brand Theme CSS -->
+<link rel="stylesheet" href="{{ asset('css/brand-theme.css') }}" />
+
 
 <link rel="stylesheet" href="{{ asset('assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
 <link rel="stylesheet" href="{{ asset('assets/vendor/libs/node-waves/node-waves.css') }}" />
