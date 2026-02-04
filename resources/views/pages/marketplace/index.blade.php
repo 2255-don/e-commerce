@@ -8,54 +8,28 @@
 @endsection
 
 @section('page-style')
+<link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
 <style>
-    :root {
-        --gold-primary: #D4AF37;
-        --gold-light: #F4E5B0;
-        --silver-accent: #C0C0C0;
-        --bg-luxury: #FDFBF7;
-    }
-    
-    body {
-        background-color: var(--bg-luxury);
-    }
-
-    .marketplace-header {
-        background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
-        padding: 2rem 0;
-        margin-bottom: 2rem;
-        border-bottom: 3px solid var(--gold-primary);
-        color: white;
-    }
-    
-    .filter-bar {
-        background: #fff;
-        padding: 1rem;
-        border-radius: 0.5rem;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05); /* Softer shadow */
-        margin-bottom: 2rem;
-        border: 1px solid var(--silver-accent);
-    }
-    
     .product-card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        transition: all var(--transition-smooth);
         height: 100%;
-        border: 1px solid #eaeaea;
+        border: 1px solid var(--grey-200);
         background: white;
+        border-radius: var(--radius-lg);
     }
     
     .product-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(212, 175, 55, 0.15) !important; /* Gold shadow */
-        border-color: var(--gold-primary);
+        box-shadow: var(--shadow-gold-lg);
+        border-color: var(--brand-gold-light);
     }
     
     .product-img-container {
         position: relative;
-        padding-top: 100%; /* 1:1 Aspect Ratio */
+        padding-top: 100%;
         overflow: hidden;
-        border-top-left-radius: 0.375rem;
-        border-top-right-radius: 0.375rem;
+        border-top-left-radius: var(--radius-lg);
+        border-top-right-radius: var(--radius-lg);
         background: #fff;
     }
     
@@ -67,7 +41,7 @@
         height: 100%;
         object-fit: contain;
         padding: 10px;
-        transition: transform 0.5s ease;
+        transition: transform var(--transition-slow);
     }
     
     .product-card:hover .product-img {
@@ -80,27 +54,15 @@
         left: 10px;
         background: rgba(255, 255, 255, 0.95);
         padding: 5px 12px;
-        border-radius: 20px;
+        border-radius: var(--radius-full);
         font-size: 0.75rem;
         font-weight: 700;
-        color: #333;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        color: var(--grey-900);
+        box-shadow: var(--shadow-sm);
         z-index: 10;
-        border: 1px solid var(--gold-light);
+        border: 1px solid var(--brand-gold-light);
     }
 
-    /* Buttons */
-    .btn-gold {
-        background-color: var(--gold-primary);
-        color: white;
-        border: none;
-    }
-    .btn-gold:hover {
-        background-color: #B5952F;
-        color: white;
-        transform: translateY(-2px);
-    }
-    
     .add-to-cart-btn {
         width: 45px;
         height: 45px;
@@ -108,87 +70,101 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.2s;
-        border: 2px solid var(--gold-primary);
+        transition: all var(--transition-base);
+        border: 2px solid var(--brand-gold);
         background: white;
-        color: var(--gold-primary);
+        color: var(--brand-gold);
     }
     
     .add-to-cart-btn:hover {
-        background: var(--gold-primary);
+        background: var(--brand-gold);
         color: white;
     }
 
-    /* Text */
-    .text-gold { color: var(--gold-primary) !important; }
-    
-    /* Offcanvas Customization */
     .offcanvas-end {
-        width: 400px; /* Wider for better view */
+        width: 400px;
     }
 </style>
 @endsection
 
 @section('content')
 
-<!-- Header (Horizontal Layout) -->
-<div class="row mb-4 align-items-center">
-    <div class="col-8">
-        <h4 class="fw-bold mb-0">
-            <span class="text-muted fw-light">Boutique /</span> Explorer
-        </h4>
-        <p class="text-muted mb-0">Découvrez nos produits d'exception</p>
-    </div>
-    <div class="col-4 text-end">
-        <!-- Cart Button triggering Offcanvas -->
-        <button type="button" class="btn btn-gold position-relative shadow-sm" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas" id="headerCartBtn" style="overflow: visible;">
-            <i class="ti ti-shopping-cart me-0 me-sm-1"></i>
-            <span class="d-none d-sm-inline-block">Mon Panier</span>
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow-sm border border-white" id="cartBadgeCount" style="font-size: 0.75rem; transform: translate(-50%, -50%) !important;">
-                {{ auth()->user()->cartItemsCount() ?? 0 }} 
-            </span>
-        </button>
+<!-- Header -->
+<div class="page-header-brand animate-fade-in-up mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="page-title-brand">
+                <i class='bx bxs-store text-brand-gold'></i>
+                Marketplace
+            </h2>
+            <p class="page-subtitle-brand">Découvrez nos produits d'exception</p>
+        </div>
+        <div>
+            <!-- Cart Button -->
+            <button type="button" class="btn btn-brand-primary position-relative" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas" id="headerCartBtn">
+                <i class='bx bxs-cart'></i>
+                <span class="d-none d-sm-inline-block ms-1">Mon Panier</span>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cartBadgeCount" style="transform: translate(-50%, -50%) !important;">
+                    {{ auth()->user()->cartItemsCount() ?? 0 }} 
+                </span>
+            </button>
+        </div>
     </div>
 </div>
 
 <!-- Filter Bar -->
-<div class="filter-bar">
-    <form action="{{ route('marketplace.index') }}" method="GET">
-        <div class="row g-3 align-items-center">
-            <!-- Search -->
-            <div class="col-12 col-md-5">
-                <div class="input-group input-group-merge">
-                    <span class="input-group-text border-end-0"><i class="ti ti-search"></i></span>
-                    <input type="text" name="search" class="form-control border-start-0 ps-0" placeholder="Rechercher un produit..." value="{{ request('search') }}">
+<div class="card-brand mb-4 animate-fade-in-up" style="animation-delay: 0.1s;">
+    <div class="card-body">
+        <form action="{{ route('marketplace.index') }}" method="GET">
+            <div class="row g-3 align-items-end">
+                <!-- Search -->
+                <div class="col-12 col-md-4">
+                    <label class="form-label-brand">
+                        <i class='bx bx-search'></i> Rechercher
+                    </label>
+                    <input type="text" name="search" class="form-control-brand" placeholder="Rechercher un produit..." value="{{ request('search') }}">
                 </div>
-            </div>
-            
-            <!-- Category -->
-            <div class="col-12 col-md-3">
-                <select name="category" class="form-select select2" data-placeholder="Catégorie">
-                    <option value="">Toutes les catégories</option>
+                
+                <!-- Category -->
+                <div class="col-12 col-md-3">
+                    <label class="form-label-brand">
+                        <i class='bx bx-category'></i> Catégorie
+                    </label>
+                    <select name="category" class="form-control-brand">
+                        <option value="">Toutes les catégories</option>
                         @foreach($categories as $category)
                         <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
                             {{ $category->name }}
                         </option>
-                    @endforeach
-                </select>
-            </div>
+                        @endforeach
+                    </select>
+                </div>
 
-            <!-- Price Range -->
-            <div class="col-12 col-md-2">
-                    <div class="input-group input-group-sm">
-                    <input type="number" name="min_price" class="form-control" placeholder="Min" value="{{ request('min_price') }}">
-                    <input type="number" name="max_price" class="form-control" placeholder="Max" value="{{ request('max_price') }}">
+                <!-- Price Range -->
+                <div class="col-12 col-md-3">
+                    <label class="form-label-brand">
+                        <i class='bx bx-money'></i> Prix (FCFA)
+                    </label>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <input type="number" name="min_price" class="form-control-brand" placeholder="Min" value="{{ request('min_price') }}">
+                        </div>
+                        <div class="col-6">
+                            <input type="number" name="max_price" class="form-control-brand" placeholder="Max" value="{{ request('max_price') }}">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit -->
+                <div class="col-12 col-md-2">
+                    <button type="submit" class="btn btn-brand-primary w-100">
+                        <i class='bx bx-filter'></i>
+                        Filtrer
+                    </button>
                 </div>
             </div>
-
-            <!-- Submit -->
-            <div class="col-12 col-md-2 d-grid">
-                <button type="submit" class="btn btn-dark">Filtrer</button>
-            </div>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
 
 <!-- Product Grid -->
