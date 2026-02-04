@@ -2,9 +2,9 @@
 
 namespace Modules\Identity\Services;
 
-use App\Models\Feature;
-use App\Models\Permission;
-use App\Models\Role;
+use Modules\Identity\Entities\Feature;
+use Modules\Identity\Entities\Permission;
+use Modules\Identity\Entities\Role;
 use Illuminate\Support\Str;
 
 class PermissionService
