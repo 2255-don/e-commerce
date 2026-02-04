@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Middleware\SetLocale;
+use Shared\Middleware\SetLocale;
+use Shared\Middleware\CheckFeatureAccess;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -15,12 +16,12 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(append: [
             SetLocale::class,
-            \App\Http\Middleware\CheckFeatureAccess::class, // Vérification globale des permissions
+            CheckFeatureAccess::class, // Vérification globale des permissions
         ]);
         
         // Register feature access middleware alias (pour usage manuel si besoin)
         $middleware->alias([
-            'feature' => \App\Http\Middleware\CheckFeatureAccess::class,
+            'feature' => CheckFeatureAccess::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

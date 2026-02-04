@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Middleware;
+namespace Shared\Middleware;
 
 use App\Models\Feature;
 use Closure;
