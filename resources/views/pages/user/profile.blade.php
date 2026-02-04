@@ -98,35 +98,39 @@
 
                 <form id="formAccountSettings" method="POST" action="{{ route('profile.update') }}">
                     @csrf
-                    <div class="row">
-                        <div class="mb-3 col-md-6">
-                            <label for="name" class="form-label">Nom complet</label>
-                            <input class="form-control" type="text" id="name" name="name" value="{{ old('name', $user->name) }}" autofocus />
-                        </div>
-                        <div class="mb-3 col-md-6">
-                            <label for="email" class="form-label">E-mail</label>
-                            <input class="form-control" type="text" id="email" name="email" value="{{ old('email', $user->email) }}" placeholder="john.doe@example.com" />
-                        </div>
-                        <div class="mb-3 col-md-6">
-                            <label class="form-label" for="phone_number">Numéro de téléphone</label>
-                            <div class="input-group input-group-merge">
-                                <span class="input-group-text">FR (+33)</span>
-                                <input type="text" id="phone_number" name="phone_number" class="form-control" value="{{ old('phone_number', $user->phone_number) }}" placeholder="06 12 34 56 78" />
+                    <x-feature-section feature="user.profile.basic-info">
+                        <div class="row">
+                            <div class="mb-3 col-md-6">
+                                <label for="name" class="form-label">Nom complet</label>
+                                <input class="form-control" type="text" id="name" name="name" value="{{ old('name', $user->name) }}" autofocus />
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label for="email" class="form-label">E-mail</label>
+                                <input class="form-control" type="text" id="email" name="email" value="{{ old('email', $user->email) }}" placeholder="john.doe@example.com" />
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label" for="phone_number">Numéro de téléphone</label>
+                                <div class="input-group input-group-merge">
+                                    <span class="input-group-text">FR (+33)</span>
+                                    <input type="text" id="phone_number" name="phone_number" class="form-control" value="{{ old('phone_number', $user->phone_number) }}" placeholder="06 12 34 56 78" />
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    @if($user->kyc_status === 'verified' && $user->sellerProfile && $user->sellerProfile->shop_name)
-                    <div class="row">
-                        <div class="mb-3 col-md-12">
-                            <label for="shop_name" class="form-label">Nom de la boutique</label>
-                            <input class="form-control" type="text" id="shop_name" name="shop_name" value="{{ old('shop_name', $user->sellerProfile->shop_name) }}" />
+                        
+                        @if($user->kyc_status === 'verified' && $user->sellerProfile && $user->sellerProfile->shop_name)
+                        <div class="row">
+                            <div class="mb-3 col-md-12">
+                                <label for="shop_name" class="form-label">Nom de la boutique</label>
+                                <input class="form-control" type="text" id="shop_name" name="shop_name" value="{{ old('shop_name', $user->sellerProfile->shop_name) }}" />
+                            </div>
                         </div>
-                    </div>
-                    @endif
+                        @endif
+                    </x-feature-section>
 
                     <hr class="my-4">
                     <h5 class="mb-4">Changer le mot de passe (optionnel)</h5>
+                    
+                    <x-feature-section feature="user.profile.change-password">
                     
                     <div class="row">
                         <div class="mb-3 col-md-6 form-password-toggle">
@@ -144,6 +148,7 @@
                             </div>
                         </div>
                     </div>
+                    </x-feature-section>
 
                     <div class="mt-2">
                         <button type="submit" class="btn btn-primary me-2">Enregistrer les modifications</button>

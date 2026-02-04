@@ -24,7 +24,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'phone_number',
-        'role',
+        'profil_id',
         'kyc_status',
         'kyc_document_path',
     ];
@@ -86,5 +86,56 @@ class User extends Authenticatable implements MustVerifyEmail
     public function sellerProfile()
     {
         return $this->hasOne(SellerProfile::class);
+    }
+
+    public function profil()
+    {
+        return $this->belongsTo(Profil::class, 'profil_id');
+    }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'role_details', 'user_id', 'role_id')
+            ->withTimestamps();
+    }
+
+    /**
+     * Check if user is Super Admin
+     */
+    public function isSuperAdmin()
+    {
+        return $this->profil && $this->profil->libelle === 'Super-Admin';
+    }
+
+    /**
+     * Check if user has a specific role
+     */
+    public function hasRole($slug)
+    {
+        return $this->roles()->where('slug', $slug)->exists();
+    }
+
+    /**
+     * Assign a role to the user
+     */
+    public function assignRole($roleSlug)
+    {
+        $role = Role::where('slug', $roleSlug)->first();
+        if ($role && !$this->hasRole($roleSlug)) {
+            $this->roles()->attach($role->id);
+        }
+        return $this;
+    }
+
+    /**
+     * Remove a role from the user
+     */
+    public function removeRole($roleSlug)
+    {
+        $role = Role::where('slug', $roleSlug)->first();
+        if ($role) {
+            $this->roles()->detach($role->id);
+        }
+        return $this;
     }
 }

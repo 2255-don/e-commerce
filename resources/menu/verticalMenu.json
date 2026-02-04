@@ -11,7 +11,7 @@
     },
     {
       "name": "Parcourir",
-      "icon": "menu-icon tf-icons ti ti-shopping-bag",
+      "icon": "menu-icon tf-icons ti ti-shopping-cart",
       "url": "boutique",
       "slug": "marketplace.index"
     },
@@ -58,6 +58,89 @@
       "url": "admin/kyc",
       "slug": "admin-kyc",
       "adminOnly": true
+    },
+    {
+      "menuHeader": "Configuration",
+      "adminOnly": true,
+      "superAdminOnly": true
+    },
+    {
+      "name": "Gestion Accès",
+      "icon": "menu-icon tf-icons ti ti-lock",
+      "slug": "admin.access-management",
+      "adminOnly": true,
+      "superAdminOnly": true,
+      "submenu": [
+        {
+          "name": "Profils",
+          "icon": "menu-icon tf-icons ti ti-users-group",
+          "url": "admin/profils",
+          "slug": [
+            "admin.profils.index",
+            "admin.profils.create",
+            "admin.profils.edit"
+          ]
+        },
+        {
+          "name": "Utilisateurs",
+          "icon": "menu-icon tf-icons ti ti-user-check",
+          "url": "admin/users",
+          "slug": [
+            "admin.users.index",
+            "admin.users.roles"
+          ]
+        },
+        {
+          "name": "Rôles",
+          "icon": "menu-icon tf-icons ti ti-id-badge",
+          "url": "admin/roles",
+          "slug": [
+            "admin.roles.index",
+            "admin.roles.create",
+            "admin.roles.edit",
+            "admin.roles.permissions"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Système Permissions",
+      "icon": "menu-icon tf-icons ti ti-shield-lock",
+      "slug": "admin.permissions-system",
+      "adminOnly": true,
+      "superAdminOnly": true,
+      "submenu": [
+        {
+          "name": "Modules",
+          "icon": "menu-icon tf-icons ti ti-components",
+          "url": "admin/modules",
+          "slug": [
+            "admin.modules.index",
+            "admin.modules.create",
+            "admin.modules.edit"
+          ]
+        },
+        {
+          "name": "Features",
+          "icon": "menu-icon tf-icons ti ti-layout-grid",
+          "url": "admin/features",
+          "slug": [
+            "admin.features.index",
+            "admin.features.create",
+            "admin.features.edit"
+          ]
+        },
+        {
+          "name": "Permissions",
+          "icon": "menu-icon tf-icons ti ti-shield-check",
+          "url": "admin/permissions",
+          "slug": [
+            "admin.permissions.index",
+            "admin.permissions.create",
+            "admin.permissions.edit"
+          ]
+        }
+      ]
     }
   ]
 }

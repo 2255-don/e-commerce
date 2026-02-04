@@ -43,9 +43,9 @@
                         </li>
                     </ul>
                 </div>
-                <a href="{{ route('seller.products.create') }}" class="btn btn-primary">
+                <x-feature-link feature="seller.products.create" route="{{ route('seller.products.create') }}" class="btn btn-primary">
                     <i class='ti ti-plus me-1'></i> Ajouter un Produit
-                </a>
+                </x-feature-link>
             </div>
         </div>
     </div>
@@ -56,6 +56,7 @@
     <div class="card-header border-bottom">
         <h5 class="card-title mb-0">Mes Produits</h5>
     </div>
+    <x-feature-section feature="seller.products.view-list" showDeniedMessage="true">
     <div class="table-responsive text-nowrap">
         <table class="table">
             <thead>
@@ -95,11 +96,15 @@
                     <td>
                         <div class="d-flex align-items-center">
                             <a href="{{ route('seller.products.show', $product->id) }}" class="text-body" title="Voir"><i class="ti ti-eye ti-sm me-2"></i></a>
-                            <a href="{{ route('seller.products.edit', $product->id) }}" class="text-body" title="Modifier"><i class="ti ti-edit ti-sm me-2"></i></a>
+                            <x-feature-link feature="seller.products.edit" route="{{ route('seller.products.edit', $product->id) }}" class="text-body" title="Modifier">
+                                <i class="ti ti-edit ti-sm me-2"></i>
+                            </x-feature-link>
                             <form id="delete-form-{{ $product->id }}" action="{{ route('seller.products.destroy', $product->id) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
-                                <button type="button" onclick="confirmDelete('{{ $product->id }}')" class="btn btn-icon btn-text-secondary rounded-pill waves-effect"><i class="ti ti-trash ti-sm"></i></button>
+                                <x-feature-button feature="seller.products.destroy" type="button" onclick="confirmDelete('{{ $product->id }}')" class="btn btn-icon btn-text-secondary rounded-pill waves-effect">
+                                    <i class="ti ti-trash ti-sm"></i>
+                                </x-feature-button>
                             </form>
                         </div>
                     </td>
@@ -118,6 +123,7 @@
             </tbody>
         </table>
     </div>
+    </x-feature-section>
 </div>
 @endsection
 

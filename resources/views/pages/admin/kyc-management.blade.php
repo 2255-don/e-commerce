@@ -23,6 +23,7 @@ $configData = Helper::appClasses();
     <div class="card-header border-bottom">
         <h5 class="card-title mb-0">Demandes en attente ({{ $pendingUsers->count() }})</h5>
     </div>
+    <x-feature-section feature="admin.kyc.view-pending" showDeniedMessage="true">
     <div class="table-responsive text-nowrap">
         <table class="table">
             <thead>
@@ -59,11 +60,15 @@ $configData = Helper::appClasses();
                             <div class="d-flex gap-2">
                                 <form action="{{ route('admin.kyc.approve', $pUser) }}" method="POST">
                                     @csrf
-                                    <button class="btn btn-sm btn-success">Valider</button>
+                                    <x-feature-button feature="admin.kyc.approve" type="submit" class="btn btn-sm btn-success">
+                                        Valider
+                                    </x-feature-button>
                                 </form>
                                 <form action="{{ route('admin.kyc.reject', $pUser) }}" method="POST">
                                     @csrf
-                                    <button class="btn btn-sm btn-danger">Rejeter</button>
+                                    <x-feature-button feature="admin.kyc.reject" type="submit" class="btn btn-sm btn-danger">
+                                        Rejeter
+                                    </x-feature-button>
                                 </form>
                             </div>
                         </td>
@@ -76,6 +81,7 @@ $configData = Helper::appClasses();
             </tbody>
         </table>
     </div>
+    </x-feature-section>
 </div>
 
 <!-- Historique Section -->
@@ -83,6 +89,7 @@ $configData = Helper::appClasses();
     <div class="card-header border-bottom">
         <h5 class="card-title mb-0">Toutes les demandes</h5>
     </div>
+    <x-feature-section feature="admin.kyc.view-all" showDeniedMessage="true">
     <div class="table-responsive text-nowrap">
         <table class="table table-sm">
             <thead>
@@ -111,5 +118,6 @@ $configData = Helper::appClasses();
             </tbody>
         </table>
     </div>
+    </x-feature-section>
 </div>
 @endsection

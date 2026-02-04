@@ -42,43 +42,46 @@
                 <div class="card-body">
                     <div class="row">
                         <!-- Basic Info -->
-                        <div class="col-md-8">
-                            <div class="mb-3">
-                                <label for="title" class="form-label">Titre du produit</label>
-                                <input type="text" class="form-control" id="title" name="title" value="{{ old('title', $product->title ?? '') }}" placeholder="Ex: Smartphone XYZ" required>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="description" class="form-label">Description</label>
-                                <textarea class="form-control" id="description" name="description" rows="4" placeholder="Description détaillée...">{{ old('description', $product->description ?? '') }}</textarea>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="product_images" class="form-label">Images du produit</label>
-                                <input class="form-control" type="file" id="product_images" name="product_images[]" multiple accept="image/*" {{ !$isEdit ? 'required' : '' }}>
-                                <div class="form-text">Vous pouvez sélectionner plusieurs images (JPG, PNG).</div>
-                            </div>
-                            
-                            @if($isEdit && $product->images->count() > 0)
+                        <x-feature-section feature="seller.products.form-basic-info">
+                            <div class="col-md-8">
                                 <div class="mb-3">
-                                    <label class="form-label d-block">Images actuelles :</label>
-                                    <div class="d-flex gap-2 flex-wrap">
-                                        @foreach($product->images as $img)
-                                            <div class="position-relative border rounded p-1" style="width: 100px; height: 100px;">
-                                                <img src="{{ asset('storage/' . $img->image_path) }}" class="w-100 h-100 rounded" style="object-fit: cover;">
-                                                <button type="button" class="btn btn-icon btn-xs btn-danger position-absolute top-0 end-0 translate-middle shadow-sm rounded-pill" 
-                                                        onclick="confirmDeleteImage('{{ $img->id }}')">
-                                                    <i class="ti ti-x"></i>
-                                                </button>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                    <div class="form-text">Supprimez les images obsolètes avant d'en ajouter de nouvelles.</div>
+                                    <label for="title" class="form-label">Titre du produit</label>
+                                    <input type="text" class="form-control" id="title" name="title" value="{{ old('title', $product->title ?? '') }}" placeholder="Ex: Smartphone XYZ" required>
                                 </div>
-                            @endif
-                        </div>
+                                
+                                <div class="mb-3">
+                                    <label for="description" class="form-label">Description</label>
+                                    <textarea class="form-control" id="description" name="description" rows="4" placeholder="Description détaillée...">{{ old('description', $product->description ?? '') }}</textarea>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="product_images" class="form-label">Images du produit</label>
+                                    <input class="form-control" type="file" id="product_images" name="product_images[]" multiple accept="image/*" {{ !$isEdit ? 'required' : '' }}>
+                                    <div class="form-text">Vous pouvez sélectionner plusieurs images (JPG, PNG).</div>
+                                </div>
+                                
+                                @if($isEdit && $product->images->count() > 0)
+                                    <div class="mb-3">
+                                        <label class="form-label d-block">Images actuelles :</label>
+                                        <div class="d-flex gap-2 flex-wrap">
+                                            @foreach($product->images as $img)
+                                                <div class="position-relative border rounded p-1" style="width: 100px; height: 100px;">
+                                                    <img src="{{ asset('storage/' . $img->image_path) }}" class="w-100 h-100 rounded" style="object-fit: cover;">
+                                                    <button type="button" class="btn btn-icon btn-xs btn-danger position-absolute top-0 end-0 translate-middle shadow-sm rounded-pill" 
+                                                            onclick="confirmDeleteImage('{{ $img->id }}')">
+                                                        <i class="ti ti-x"></i>
+                                                    </button>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                        <div class="form-text">Supprimez les images obsolètes avant d'en ajouter de nouvelles.</div>
+                                    </div>
+                                @endif
+                            </div>
+                        </x-feature-section>
 
                         <!-- Side Specs -->
+                        <x-feature-section feature="seller.products.form-specs">
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label for="category_id" class="form-label">Catégorie</label>
@@ -108,6 +111,7 @@
                                 </select>
                             </div>
                         </div>
+                        </x-feature-section>
                     </div>
                 </div>
                 

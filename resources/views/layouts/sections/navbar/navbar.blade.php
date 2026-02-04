@@ -98,7 +98,7 @@
                                                     John Doe
                                                 @endif
                                             </span>
-                                            <small class="text-muted">Admin</small>
+                                            <small class="text-muted">{{ Auth::user()->profil->libelle }}</small>
                                         </div>
                                     </div>
                                 </a>

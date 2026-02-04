@@ -49,18 +49,20 @@ $configData = Helper::appClasses();
                 @else
                     <form id="kycForm" method="POST" action="{{ route('kyc.store') }}" enctype="multipart/form-data">
                         @csrf
-                        <div class="mb-3">
-                            <label for="shop_name" class="form-label">Nom de votre boutique / shop</label>
-                            <input type="text" class="form-control" id="shop_name" name="shop_name" placeholder="Ex: Ma Super Boutique" value="{{ old('shop_name', $user->sellerProfile->shop_name) }}" required>
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="kyc_document" class="form-label">Pièce d'identité (CNI, Passeport, Permis)</label>
-                            <input class="form-control" type="file" id="kyc_document" name="kyc_document" accept="image/*" required>
-                            <div class="form-text mt-2 text-info">
-                                <i class="ti ti-info-circle ti-xs"></i> Formats autorisés : JPG, PNG. Taille max : 2Mo.
+                        <x-feature-section feature="user.kyc.submit-form">
+                            <div class="mb-3">
+                                <label for="shop_name" class="form-label">Nom de votre boutique / shop</label>
+                                <input type="text" class="form-control" id="shop_name" name="shop_name" placeholder="Ex: Ma Super Boutique" value="{{ old('shop_name', $user->sellerProfile->shop_name) }}" required>
                             </div>
-                        </div>
+
+                            <div class="mb-4">
+                                <label for="kyc_document" class="form-label">Pièce d'identité (CNI, Passeport, Permis)</label>
+                                <input class="form-control" type="file" id="kyc_document" name="kyc_document" accept="image/*" required>
+                                <div class="form-text mt-2 text-info">
+                                    <i class="ti ti-info-circle ti-xs"></i> Formats autorisés : JPG, PNG. Taille max : 2Mo.
+                                </div>
+                            </div>
+                        </x-feature-section>
 
                         <div class="text-center">
                             <button type="submit" class="btn btn-primary w-100 mb-2">Soumettre mon document</button>

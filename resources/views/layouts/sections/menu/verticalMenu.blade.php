@@ -29,6 +29,16 @@
                 @continue
             @endif
 
+            @if(isset($menu->superAdminOnly) && $menu->superAdminOnly)
+                @php
+                    $user = auth()->user();
+                    $isSuperAdmin = $user && $user->isSuperAdmin();
+                @endphp
+                @if(!$isSuperAdmin)
+                    @continue
+                @endif
+            @endif
+
             @if(isset($menu->sellerOnly) && $menu->sellerOnly)
                 @php
                     $user = auth()->user();

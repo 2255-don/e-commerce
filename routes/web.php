@@ -1,74 +1,156 @@
 <?php
 
-use App\Http\Controllers\langue\LanguageController;
-use App\Http\Controllers\user\UserController;
 use Illuminate\Support\Facades\Route;
+
+// ============================================
+// CONTROLLERS WEB - Groupés par domaine
+// ============================================
+
+// Langue
+use App\Http\Controllers\langue\LanguageController;
+
+// Marketplace
+use App\Http\Controllers\Web\Marketplace\MarketplaceController;
+
+// Cart & Checkout
+use App\Http\Controllers\Web\Cart\CheckoutController;
+
+// Orders
+use App\Http\Controllers\Web\Order\OrderHistoryController;
+
+// User
+use App\Http\Controllers\Web\User\UserController;
+use App\Http\Controllers\Web\User\KycController;
+
+// Seller
+use App\Http\Controllers\Web\Seller\SellerController;
+use App\Http\Controllers\Web\Seller\ProductController as SellerProductController;
+
+// Wallet
+use App\Http\Controllers\Web\Wallet\WalletController;
+
+// Admin
+use App\Http\Controllers\Web\Admin\KycController as AdminKycController;
+
+// Middleware
+use App\Http\Middleware\EnsureUserIsActiveSeller;
+
+// ============================================
+// ROUTES PUBLIQUES
+// ============================================
 
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard')->middleware(['auth', 'verified']);
 
+// Language Switcher
 Route::get('lang/{locale}', [LanguageController::class, 'swap']);
-Route::get('/profile', [UserController::class, 'show'])->name('profile.show')->middleware(['auth']);
-Route::post('/profile/update', [UserController::class, 'update'])->name('profile.update')->middleware(['auth']);
 
-// Wallet Routes
-Route::group(['prefix' => 'wallet', 'middleware' => 'auth'], function () {
-    Route::get('/recharge', [App\Http\Controllers\wallet\WalletController::class, 'showRecharge'])->name('wallet.recharge');
-    Route::post('/recharge', [App\Http\Controllers\wallet\WalletController::class, 'processRecharge'])->name('wallet.process-recharge');
+// Marketplace (accessible sans login)
+Route::prefix('boutique')->name('marketplace.')->group(function () {
+    Route::get('/', [MarketplaceController::class, 'index'])->name('index');
+    Route::get('/{product}', [MarketplaceController::class, 'show'])->name('show');
 });
 
-// Marketplace Routes (Public)
-Route::get('/boutique', [App\Http\Controllers\MarketplaceController::class, 'index'])->name('marketplace.index');
-Route::get('/boutique/{product}', [App\Http\Controllers\MarketplaceController::class, 'show'])->name('marketplace.show');
+// ============================================
+// ROUTES AUTHENTIFIÉES
+// ============================================
 
-// Cart & Checkout
-Route::group(['middleware' => 'auth'], function() {
-    Route::get('/cart', [App\Http\Controllers\CheckoutController::class, 'index'])->name('checkout.index');
-    Route::get('/cart/add/{productId}', [App\Http\Controllers\CheckoutController::class, 'add'])->name('checkout.add');
-    Route::get('/cart/details', [App\Http\Controllers\CheckoutController::class, 'cartDetails'])->name('checkout.details');
-    Route::post('/cart/update', [App\Http\Controllers\CheckoutController::class, 'update'])->name('checkout.update');
-    Route::get('/cart/remove/{productId}', [App\Http\Controllers\CheckoutController::class, 'remove'])->name('checkout.remove'); // Using GET for ease, ideally DELETE
-    Route::post('/checkout/process', [App\Http\Controllers\CheckoutController::class, 'process'])->name('checkout.process');
-
-    // Client Orders (History)
-    Route::get('/my-orders', [App\Http\Controllers\OrderHistoryController::class, 'index'])->name('user.orders.index');
-    Route::get('/my-orders/pending', [App\Http\Controllers\OrderHistoryController::class, 'pending'])->name('user.orders.pending'); 
+Route::middleware(['auth', 'verified'])->group(function () {
     
-    // Split Show Routes to maintain Sidebar Active State
-    Route::get('/my-orders/history/{order}', [App\Http\Controllers\OrderHistoryController::class, 'show'])->name('user.orders.show');
-    Route::get('/my-orders/pending/{order}', [App\Http\Controllers\OrderHistoryController::class, 'show'])->name('user.orders.show_pending');
+    // Dashboard
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
     
-    Route::post('/my-orders/{order}/confirm', [App\Http\Controllers\OrderHistoryController::class, 'confirmDelivery'])->name('user.orders.confirm');
-    Route::get('/my-orders/{order}/receipt', [App\Http\Controllers\OrderHistoryController::class, 'downloadReceipt'])->name('user.orders.download');
-});
-
-// Seller/License Routes
-Route::group(['prefix' => 'seller', 'middleware' => 'auth'], function () {
-    Route::get('/license', [App\Http\Controllers\seller\SellerController::class, 'showLicenseForm'])->name('seller.license');
-    Route::post('/license/wallet', [App\Http\Controllers\seller\SellerController::class, 'purchaseWithWallet'])->name('seller.license.wallet');
-    
-    // Espace Dashboard (Protected)
-    Route::group(['middleware' => [\App\Http\Middleware\EnsureUserIsActiveSeller::class]], function () {
-        Route::get('/dashboard', [App\Http\Controllers\seller\SellerEspaceBoutiqueController::class, 'index'])->name('seller.dashboard');
-        Route::resource('products', App\Http\Controllers\seller\SellerEspaceBoutiqueController::class, ['as' => 'seller']);
-        Route::delete('products/images/{productImageId}', [App\Http\Controllers\seller\SellerEspaceBoutiqueController::class, 'destroyImage'])->name('seller.products.images.destroy');
+    // -------------------- USER --------------------
+    Route::prefix('profile')->group(function () {
+        Route::get('/', [UserController::class, 'show'])->name('profile.show');
+        Route::post('/update', [UserController::class, 'update'])->name('profile.update');
     });
-});
+    
+    // -------------------- KYC --------------------
+    Route::prefix('kyc')->name('kyc.')->group(function () {
+        Route::get('/', [KycController::class, 'showForm'])->name('form');
+        Route::post('/', [KycController::class, 'store'])->name('store');
+    });
+    
+    // -------------------- WALLET --------------------
+    Route::prefix('wallet')->name('wallet.')->group(function () {
+        Route::get('/recharge', [WalletController::class, 'showRecharge'])->name('recharge');
+        Route::post('/recharge', [WalletController::class, 'processRecharge'])->name('process-recharge');
+    });
+    
+    // -------------------- CART & CHECKOUT --------------------
+    Route::prefix('cart')->name('checkout.')->group(function () {
+        Route::get('/', [CheckoutController::class, 'index'])->name('index');
+        Route::get('/add/{productId}', [CheckoutController::class, 'add'])->name('add');
+        Route::get('/details', [CheckoutController::class, 'cartDetails'])->name('details');
+        Route::post('/update', [CheckoutController::class, 'update'])->name('update');
+        Route::get('/remove/{productId}', [CheckoutController::class, 'remove'])->name('remove');
+    });
+    
+    Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
+    
+    // -------------------- ORDERS --------------------
+    Route::prefix('my-orders')->name('user.orders.')->group(function () {
+        Route::get('/', [OrderHistoryController::class, 'index'])->name('index');
+        Route::get('/pending', [OrderHistoryController::class, 'pending'])->name('pending');
+        
+        // Split Show Routes to maintain Sidebar Active State
+        Route::get('/history/{order}', [OrderHistoryController::class, 'show'])->name('show');
+        Route::get('/pending/{order}', [OrderHistoryController::class, 'show'])->name('show_pending');
+        
+        Route::post('/{order}/confirm', [OrderHistoryController::class, 'confirmDelivery'])->name('confirm');
+        Route::get('/{order}/receipt', [OrderHistoryController::class, 'downloadReceipt'])->name('download');
+    });
+    
+    // -------------------- SELLER --------------------
+    Route::prefix('seller')->name('seller.')->group(function () {
+        // License (accessible à tous les users authentifiés)
+        Route::get('/license', [SellerController::class, 'showLicenseForm'])->name('license');
+        Route::post('/license/wallet', [SellerController::class, 'purchaseWithWallet'])->name('license.wallet');
+        
+        // Dashboard & Products (seulement pour vendeurs actifs)
+        Route::middleware(EnsureUserIsActiveSeller::class)->group(function () {
+            Route::get('/dashboard', [SellerProductController::class, 'index'])->name('dashboard');
+            Route::resource('products', SellerProductController::class);
+            Route::delete('products/images/{productImageId}', [SellerProductController::class, 'destroyImage'])->name('products.images.destroy');
+        });
+    });
+    
+    
+    // -------------------- ADMIN --------------------
+    Route::middleware('can:admin-access')->prefix('admin')->name('admin.')->group(function () {
+        // KYC Management
+        Route::prefix('kyc')->name('kyc.')->group(function () {
+            Route::get('/', [AdminKycController::class, 'index'])->name('index');
+            Route::post('/{user}/approve', [AdminKycController::class, 'approve'])->name('approve');
+            Route::post('/{user}/reject', [AdminKycController::class, 'reject'])->name('reject');
+        });
+    });
 
-// KYC Routes
-Route::group(['prefix' => 'kyc', 'middleware' => 'auth'], function () {
-    Route::get('/', [App\Http\Controllers\user\KycController::class, 'showForm'])->name('kyc.form');
-    Route::post('/', [App\Http\Controllers\user\KycController::class, 'store'])->name('kyc.store');
+    // -------------------- SUPER ADMIN --------------------
+    Route::middleware('can:super-admin-access')->prefix('admin')->name('admin.')->group(function () {
+        // Profils Management
+        Route::resource('profils', \App\Http\Controllers\Admin\ProfilController::class);
+        
+        // Roles Management (CRUD)
+        Route::resource('roles', \App\Http\Controllers\Admin\RoleManagementController::class);
+        
+        // Permissions System Management
+        Route::resource('modules', \App\Http\Controllers\Web\ModuleController::class);
+        Route::resource('features', \App\Http\Controllers\Web\FeatureController::class);
+        Route::resource('permissions', \App\Http\Controllers\Web\PermissionController::class);
+        
+        // Role Permissions Management
+        Route::get('roles/{role}/permissions', [\App\Http\Controllers\Web\RoleController::class, 'permissions'])->name('roles.permissions');
+        Route::post('roles/{role}/permissions', [\App\Http\Controllers\Web\RoleController::class, 'updatePermissions'])->name('roles.permissions.update');
+        
+        // User Management - Role Assignment
+        Route::get('users', [\App\Http\Controllers\Admin\UserManagementController::class, 'index'])->name('users.index');
+        Route::get('users/{user}/roles', [\App\Http\Controllers\Admin\UserManagementController::class, 'roles'])->name('users.roles');
+        Route::post('users/{user}/roles', [\App\Http\Controllers\Admin\UserManagementController::class, 'updateRoles'])->name('users.roles.update');
+    });
+    
 });
-
-// Admin Routes
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'can:admin-access']], function () {
-    Route::get('/kyc', [App\Http\Controllers\admin\AdminKycController::class, 'index'])->name('admin.kyc.index');
-    Route::post('/kyc/{user}/approve', [App\Http\Controllers\admin\AdminKycController::class, 'approve'])->name('admin.kyc.approve');
-    Route::post('/kyc/{user}/reject', [App\Http\Controllers\admin\AdminKycController::class, 'reject'])->name('admin.kyc.reject');
-});
-
