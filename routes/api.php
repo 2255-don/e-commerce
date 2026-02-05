@@ -10,11 +10,9 @@ use Illuminate\Support\Facades\Route;
 // Auth
 use App\Http\Controllers\Api\Auth\AuthApiController;
 
-// Wallet
-use App\Http\Controllers\Api\Wallet\WalletApiController;
-
-// Seller
-use App\Http\Controllers\Api\Seller\SellerApiController;
+// LEGACY CONTROLLERS - Commented out (migrated to DDD modules)
+// use App\Http\Controllers\Api\Wallet\WalletApiController;
+// use App\Http\Controllers\Api\Seller\SellerApiController;
 
 // Mock
 use App\Http\Controllers\mock\MockMobileMoneyController;
@@ -42,17 +40,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthApiController::class, 'me']);
     Route::post('/logout', [AuthApiController::class, 'logout'])->name('api.auth.logout');
     
-    // -------------------- WALLET --------------------
-    Route::prefix('wallet')->name('api.wallet.')->group(function () {
-        Route::get('/', [WalletApiController::class, 'index'])->name('index');
-        Route::post('/recharge', [WalletApiController::class, 'recharge'])->name('recharge');
-    });
+    // ===== WALLET API - NOW HANDLED BY FINTECH DDD MODULE =====
+    // See: app/Modules/Fintech/Routes/api.php
+    // Routes: /api/wallet/*, /api/wallet/transactions, etc.
     
-    // -------------------- SELLER --------------------
-    Route::prefix('seller')->name('api.seller.')->group(function () {
-        Route::get('/profile', [SellerApiController::class, 'index'])->name('profile');
-        Route::post('/license', [SellerApiController::class, 'purchaseLicense'])->name('license');
-    });
+    // ===== SELLER API - NOW HANDLED BY SELLER DDD MODULE =====
+    // See: app/Modules/Seller/Routes/api.php
+    // Routes: /api/seller/profile, /api/seller/products, etc.
     
     // -------------------- PERMISSIONS SYSTEM --------------------
     Route::middleware('can:super-admin-access')->prefix('admin')->group(function () {
