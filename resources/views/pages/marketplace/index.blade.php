@@ -105,7 +105,7 @@
                 <i class='bx bxs-cart'></i>
                 <span class="d-none d-sm-inline-block ms-1">Mon Panier</span>
                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cartBadgeCount" style="transform: translate(-50%, -50%) !important;">
-                    {{ auth()->user()->cartItemsCount() ?? 0 }} 
+                    {{ auth()->check() ? auth()->user()->cartItemsCount() : 0 }} 
                 </span>
             </button>
         </div>

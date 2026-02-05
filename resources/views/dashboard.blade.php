@@ -154,7 +154,7 @@
                                 Marketplace
                             </a>
                         @endif
-                        <a href="{{ route('wallet.index') }}" class="quick-action-btn">
+                        <a href="{{ route('wallet.recharge') }}" class="quick-action-btn">
                             <i class='bx bxs-wallet'></i>
                             Mon Wallet
                         </a>
