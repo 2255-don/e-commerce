@@ -37,8 +37,23 @@ class ProductRepository implements ProductRepositoryInterface
             ->paginate($perPage);
     }
     
-    public function search(ProductFilterDTO $filters, int $perPage = 15)
+    public function search(ProductFilterDTO|array $filters, int $perPage = 15)
     {
+        // Convert array to DTO if needed for backward compatibility
+        if (is_array($filters)) {
+            $filters = new ProductFilterDTO(
+                search: $filters['search'] ?? null,
+                categoryId: $filters['category_id'] ?? null,
+                minPrice: $filters['min_price'] ?? null,
+                maxPrice: $filters['max_price'] ?? null,
+                sellerId: $filters['seller_id'] ?? null,
+                type: $filters['type'] ?? null,
+                activeOnly: $filters['active_only'] ?? true,
+                sortBy: $filters['sort_by'] ?? 'created_at',
+                sortDirection: $filters['sort_direction'] ?? 'desc',
+            );
+        }
+        
         $query = Product::query()->with(['seller', 'category', 'images']);
         
         if ($filters->activeOnly) {
