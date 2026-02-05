@@ -20,8 +20,8 @@ class ModuleServiceProvider extends ServiceProvider
         // Register Marketplace Module
         $this->app->register(\Modules\Marketplace\Providers\MarketplaceServiceProvider::class);
         
-        // Register Seller Module (when ready)
-        // $this->app->register(\Modules\Seller\Providers\SellerServiceProvider::class);
+        // Register Seller Module
+        $this->app->register(\Modules\Seller\Providers\SellerServiceProvider::class);
     }
 
     /**
