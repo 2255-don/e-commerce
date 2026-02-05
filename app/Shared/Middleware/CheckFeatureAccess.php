@@ -1,6 +1,6 @@
 <?php
 
-namespace Shared\Middleware;
+namespace App\Shared\Middleware;
 
 use Modules\Identity\Entities\Feature;
 use Closure;
