@@ -7,7 +7,7 @@ use Modules\Identity\Entities\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
-class RoleManagementController extends Controller
+class RoleController extends Controller
 {
     /**
      * Display a listing of roles

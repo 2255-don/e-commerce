@@ -26,8 +26,10 @@ class FintechServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Fintech\Services\PaymentGatewayService::class);
     }
     
-    public function boot()
+    public function boot(): void
     {
-        // Routes, Views, Migrations sont gérés par ModuleServiceProvider
+        // Load routes
+        $this->loadRoutesFrom(__DIR__ . '/../Routes/web.php');
+        $this->loadRoutesFrom(__DIR__ . '/../Routes/api.php');
     }
 }
