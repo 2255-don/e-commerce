@@ -9,31 +9,27 @@ use Illuminate\Support\Facades\Route;
 // Langue
 use App\Http\Controllers\langue\LanguageController;
 
-// Marketplace
-use App\Http\Controllers\Web\Marketplace\MarketplaceController;
+// LEGACY CONTROLLERS - Commented out (migrated to DDD modules)
+// use App\Http\Controllers\Web\Marketplace\MarketplaceController;
+// use App\Http\Controllers\Web\Seller\SellerController;
+// use App\Http\Controllers\Web\Seller\ProductController as SellerProductController;
+// use App\Http\Controllers\Web\Wallet\WalletController;
 
-// Cart & Checkout
+// Cart & Checkout (NOT YET MIGRATED)
 use App\Http\Controllers\Web\Cart\CheckoutController;
 
-// Orders
+// Orders (NOT YET MIGRATED)
 use App\Http\Controllers\Web\Order\OrderHistoryController;
 
-// User
+// User (NOT YET MIGRATED)
 use App\Http\Controllers\Web\User\UserController;
 use App\Http\Controllers\Web\User\KycController;
-
-// Seller
-use App\Http\Controllers\Web\Seller\SellerController;
-use App\Http\Controllers\Web\Seller\ProductController as SellerProductController;
-
-// Wallet
-use App\Http\Controllers\Web\Wallet\WalletController;
 
 // Admin
 use App\Http\Controllers\Web\Admin\KycController as AdminKycController;
 
-// Middleware
-use App\Http\Middleware\EnsureUserIsActiveSeller;
+// Middleware (LEGACY - now in DDD modules)
+// use App\Http\Middleware\EnsureUserIsActiveSeller;
 
 // ============================================
 // ROUTES PUBLIQUES
@@ -46,11 +42,10 @@ Route::get('/', function () {
 // Language Switcher
 Route::get('lang/{locale}', [LanguageController::class, 'swap']);
 
-// Marketplace (accessible sans login)
-Route::prefix('boutique')->name('marketplace.')->group(function () {
-    Route::get('/', [MarketplaceController::class, 'index'])->name('index');
-    Route::get('/{product}', [MarketplaceController::class, 'show'])->name('show');
-});
+// ===== MARKETPLACE - NOW HANDLED BY DDD MODULE =====
+// See: app/Modules/Marketplace/Routes/web.php
+// Routes: /marketplace, /marketplace/{product}, /cart, /checkout
+// Controllers are in Modules\Marketplace\Controllers namespace
 
 // ============================================
 // ROUTES AUTHENTIFIÉES
@@ -75,11 +70,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/', [KycController::class, 'store'])->name('store');
     });
     
-    // -------------------- WALLET --------------------
-    Route::prefix('wallet')->name('wallet.')->group(function () {
-        Route::get('/recharge', [WalletController::class, 'showRecharge'])->name('recharge');
-        Route::post('/recharge', [WalletController::class, 'processRecharge'])->name('process-recharge');
-    });
+    // ===== WALLET - NOW HANDLED BY FINTECH DDD MODULE =====
+    // See: app/Modules/Fintech/Routes/web.php
+    // Routes: /wallet/recharge, /wallet/transactions
+    // Controllers are in Modules\Fintech\Controllers namespace
     
     // -------------------- CART & CHECKOUT --------------------
     Route::prefix('cart')->name('checkout.')->group(function () {
@@ -105,19 +99,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/{order}/receipt', [OrderHistoryController::class, 'downloadReceipt'])->name('download');
     });
     
-    // -------------------- SELLER --------------------
-    Route::prefix('seller')->name('seller.')->group(function () {
-        // License (accessible à tous les users authentifiés)
-        Route::get('/license', [SellerController::class, 'showLicenseForm'])->name('license');
-        Route::post('/license/wallet', [SellerController::class, 'purchaseWithWallet'])->name('license.wallet');
-        
-        // Dashboard & Products (seulement pour vendeurs actifs)
-        Route::middleware(EnsureUserIsActiveSeller::class)->group(function () {
-            Route::get('/dashboard', [SellerProductController::class, 'index'])->name('dashboard');
-            Route::resource('products', SellerProductController::class);
-            Route::delete('products/images/{productImageId}', [SellerProductController::class, 'destroyImage'])->name('products.images.destroy');
-        });
-    });
+    // ===== SELLER - NOW HANDLED BY SELLER DDD MODULE =====
+    // See: app/Modules/Seller/Routes/web.php
+    // Routes: /seller/dashboard, /seller/products/*
+    // Controllers are in Modules\Seller\Controllers namespace
+    // Middleware: defined in Seller module
     
     
     // -------------------- ADMIN --------------------
