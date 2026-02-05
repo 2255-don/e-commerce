@@ -37,7 +37,7 @@ class OrderApiController extends Controller
         ]);
         
         try {
-            $dto = PlaceOrderDTO::fromRequest($validated);
+            $dto = PlaceOrderDTO::fromRequest($validated, $request->user()->id);
             $order = $this->orderService->placeOrder($request->user()->id, $dto);
             
             return response()->json([

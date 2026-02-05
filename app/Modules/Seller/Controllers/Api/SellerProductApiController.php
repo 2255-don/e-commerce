@@ -44,7 +44,7 @@ class SellerProductApiController extends Controller
         
         try {
             $validated['seller_id'] = $request->user()->id;
-            $dto = CreateProductDTO::fromRequest($validated);
+            $dto = CreateProductDTO::fromRequest($validated, $request->user()->id);
             $product = $this->productRepository->create($dto->toArray());
             
             return response()->json([

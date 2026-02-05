@@ -34,7 +34,7 @@ class CheckoutController extends Controller
         ]);
         
         try {
-            $dto = PlaceOrderDTO::fromRequest($validated);
+            $dto = PlaceOrderDTO::fromRequest($validated, auth()->id());
             $order = $this->orderService->placeOrder(auth()->id(), $dto);
             
             return redirect()->route('checkout.success', $order->id)

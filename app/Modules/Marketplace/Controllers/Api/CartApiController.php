@@ -41,7 +41,7 @@ class CartApiController extends Controller
         ]);
         
         try {
-            $dto = AddToCartDTO::fromRequest($validated);
+            $dto = AddToCartDTO::fromRequest($validated, $request->user()->id);
             $cart = $this->cartService->addItem($request->user()->id, $dto);
             
             return response()->json([

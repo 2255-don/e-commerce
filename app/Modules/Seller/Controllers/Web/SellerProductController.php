@@ -39,7 +39,7 @@ class SellerProductController extends Controller
         
         $validated['seller_id'] = auth()->id();
         
-        $dto = CreateProductDTO::fromRequest($validated);
+        $dto = CreateProductDTO::fromRequest($validated, auth()->id());
         $product = $this->productRepository->create($dto->toArray());
         
         return redirect()->route('seller.products.index')

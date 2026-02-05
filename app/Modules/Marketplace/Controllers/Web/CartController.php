@@ -26,8 +26,8 @@ class CartController extends Controller
             'quantity' => 'required|integer|min:1',
         ]);
         
-        $dto = AddToCartDTO::fromRequest($validated);
-        $this->cartService->addItem(auth()->id(), $dto);
+        $dto = AddToCartDTO::fromRequest($validated, $request->user()->id);
+        $this->cartService->addItem($request->user()->id, $dto);
         
         return redirect()->back()->with('success', 'Product added to cart');
     }
