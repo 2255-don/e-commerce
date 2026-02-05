@@ -1,6 +1,6 @@
 <?php
 
-use App\Shared\Middleware\SetLocale;
+use App\Shared\Middleware\CustomSetLocale;
 use App\Shared\Middleware\CheckFeatureAccess;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -15,7 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(append: [
-            SetLocale::class,
+            CustomSetLocale::class,
             CheckFeatureAccess::class, // Vérification globale des permissions
         ]);
         
