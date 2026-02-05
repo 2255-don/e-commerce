@@ -1,7 +1,7 @@
 <?php
 
-use Shared\Middleware\SetLocale;
-use Shared\Middleware\CheckFeatureAccess;
+use App\Shared\Middleware\SetLocale;
+use App\Shared\Middleware\CheckFeatureAccess;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
