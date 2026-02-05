@@ -5,6 +5,7 @@ namespace Modules\Marketplace\Controllers\Web;
 use App\Http\Controllers\Controller;
 use Modules\Marketplace\Services\OrderService;
 use Modules\Marketplace\Services\CartService;
+use Modules\Marketplace\Repositories\OrderRepository;
 use Modules\Marketplace\DTOs\PlaceOrderDTO;
 use Illuminate\Http\Request;
 
@@ -13,6 +14,7 @@ class CheckoutController extends Controller
     public function __construct(
         private readonly OrderService $orderService,
         private readonly CartService $cartService,
+        private readonly OrderRepository $orderRepository,
     ) {}
     
     public function index()
@@ -35,7 +37,7 @@ class CheckoutController extends Controller
         
         try {
             $dto = PlaceOrderDTO::fromRequest($validated, auth()->id());
-            $order = $this->orderService->placeOrder(auth()->id(), $dto);
+            $order = $this->orderService->placeOrder($dto);
             
             return redirect()->route('checkout.success', $order->id)
                 ->with('success', 'Order placed successfully');
@@ -47,7 +49,7 @@ class CheckoutController extends Controller
     
     public function success(string $orderId)
     {
-        $order = $this->orderService->getOrderById($orderId);
+        $order = $this->orderRepository->findById($orderId);
         
         if (!$order || $order->buyer_id !== auth()->id()) {
             abort(404);

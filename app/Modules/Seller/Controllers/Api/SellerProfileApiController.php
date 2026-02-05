@@ -21,7 +21,7 @@ class SellerProfileApiController extends Controller
      */
     public function show(Request $request)
     {
-        $profile = $this->sellerProfileService->getByUserId($request->user()->id);
+        $profile = $this->sellerProfileService->getProfileByUserId($request->user()->id);
         
         if (!$profile) {
             return response()->json([
@@ -49,7 +49,7 @@ class SellerProfileApiController extends Controller
         
         try {
             $dto = CreateSellerProfileDTO::fromRequest($validated, $request->user()->id);
-            $profile = $this->sellerProfileService->create($dto);
+            $profile = $this->sellerProfileService->createProfile($dto);
             
             return response()->json([
                 'success' => true,
@@ -76,7 +76,7 @@ class SellerProfileApiController extends Controller
         
         try {
             $dto = UpdateSellerProfileDTO::fromRequest($validated);
-            $profile = $this->sellerProfileService->update($request->user()->id, $dto);
+            $profile = $this->sellerProfileService->updateProfile($request->user()->id, $dto);
             
             return response()->json([
                 'success' => true,

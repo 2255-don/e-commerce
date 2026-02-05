@@ -27,7 +27,7 @@ class CartController extends Controller
         ]);
         
         $dto = AddToCartDTO::fromRequest($validated, $request->user()->id);
-        $this->cartService->addItem($request->user()->id, $dto);
+        $cart = $this->cartService->addToCart($dto);
         
         return redirect()->back()->with('success', 'Product added to cart');
     }
@@ -38,14 +38,18 @@ class CartController extends Controller
             'quantity' => 'required|integer|min:1',
         ]);
         
-        $this->cartService->updateItem(auth()->id(), $itemId, $validated['quantity']);
+        $cart = $this->cartService->updateCartItem(
+            $request->user()->id,
+            $itemId,
+            $validated['quantity']
+        );
         
         return redirect()->back()->with('success', 'Cart updated');
     }
     
-    public function remove(string $itemId)
+    public function remove(Request $request, string $itemId)
     {
-        $this->cartService->removeItem(auth()->id(), $itemId);
+        $cart = $this->cartService->removeFromCart($request->user()->id, $itemId);
         
         return redirect()->back()->with('success', 'Item removed from cart');
     }

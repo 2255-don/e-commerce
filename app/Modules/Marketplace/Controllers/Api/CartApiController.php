@@ -42,7 +42,7 @@ class CartApiController extends Controller
         
         try {
             $dto = AddToCartDTO::fromRequest($validated, $request->user()->id);
-            $cart = $this->cartService->addItem($request->user()->id, $dto);
+            $cart = $this->cartService->addToCart($dto);
             
             return response()->json([
                 'success' => true,
@@ -67,7 +67,7 @@ class CartApiController extends Controller
         ]);
         
         try {
-            $cart = $this->cartService->updateItem(
+            $cart = $this->cartService->updateCartItem(
                 $request->user()->id,
                 $itemId,
                 $validated['quantity']
@@ -92,7 +92,7 @@ class CartApiController extends Controller
     public function remove(Request $request, string $itemId)
     {
         try {
-            $cart = $this->cartService->removeItem($request->user()->id, $itemId);
+            $cart = $this->cartService->removeFromCart($request->user()->id, $itemId);
             
             return response()->json([
                 'success' => true,

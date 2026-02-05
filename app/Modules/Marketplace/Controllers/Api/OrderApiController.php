@@ -4,6 +4,7 @@ namespace Modules\Marketplace\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Modules\Marketplace\Services\OrderService;
+use Modules\Marketplace\Repositories\OrderRepository;
 use Modules\Marketplace\DTOs\PlaceOrderDTO;
 use Illuminate\Http\Request;
 
@@ -11,6 +12,7 @@ class OrderApiController extends Controller
 {
     public function __construct(
         private readonly OrderService $orderService,
+        private readonly OrderRepository $orderRepository,
     ) {}
     
     /**
@@ -38,7 +40,7 @@ class OrderApiController extends Controller
         
         try {
             $dto = PlaceOrderDTO::fromRequest($validated, $request->user()->id);
-            $order = $this->orderService->placeOrder($request->user()->id, $dto);
+            $order = $this->orderService->placeOrder($dto);
             
             return response()->json([
                 'success' => true,
@@ -58,7 +60,7 @@ class OrderApiController extends Controller
      */
     public function show(Request $request, string $id)
     {
-        $order = $this->orderService->getOrderById($id);
+        $order = $this->orderRepository->findById($id);
         
         if (!$order || $order->buyer_id !== $request->user()->id) {
             return response()->json([
