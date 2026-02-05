@@ -17,8 +17,8 @@ class ModuleServiceProvider extends ServiceProvider
         // Register Fintech Module
         $this->app->register(\Modules\Fintech\Providers\FintechServiceProvider::class);
         
-        // Register Marketplace Module (when ready)
-        // $this->app->register(\Modules\Marketplace\Providers\MarketplaceServiceProvider::class);
+        // Register Marketplace Module
+        $this->app->register(\Modules\Marketplace\Providers\MarketplaceServiceProvider::class);
         
         // Register Seller Module (when ready)
         // $this->app->register(\Modules\Seller\Providers\SellerServiceProvider::class);
