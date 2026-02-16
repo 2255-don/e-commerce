@@ -16,10 +16,11 @@ return new class extends Migration
         });
 
         Schema::create('cart_items', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->foreignUuid('cart_id')->constrained()->onDelete('cascade');
             $table->foreignUuid('product_id')->constrained()->onDelete('cascade');
             $table->integer('quantity');
+            $table->decimal('price_at_addition', 10, 2); // Prix au moment de l'ajout
             $table->timestamps();
         });
     }

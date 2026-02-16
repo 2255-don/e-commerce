@@ -34,8 +34,11 @@ class SellerStatsService
         $orders = $this->orderRepository->getSellerOrders($sellerId, 9999);
         $totalOrders = $orders->total();
         
-        $totalRevenue = $orders->sum(function($order) {
-            return $order->items->where('seller_id', $order->buyer_id)->sum('subtotal');
+        $totalRevenue = $orders->sum(function($order) use ($sellerId) {
+            // Sum subtotal of items where the product belongs to this seller
+            return $order->items->filter(function($item) use ($sellerId) {
+                return $item->product && $item->product->seller_id === $sellerId;
+            })->sum('subtotal');
         });
         
         // Commission calculée

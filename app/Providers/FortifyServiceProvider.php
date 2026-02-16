@@ -69,5 +69,16 @@ class FortifyServiceProvider extends ServiceProvider
         RateLimiter::for('two-factor', function (Request $request) {
             return Limit::perMinute(5)->by($request->session()->get('login.id'));
         });
+        
+        // Redirect to marketplace after login instead of dashboard
+        Fortify::authenticateUsing(function (Request $request) {
+            $user = \Modules\Identity\Entities\User::where('email', $request->email)->first();
+            
+            if ($user && \Illuminate\Support\Facades\Hash::check($request->password, $user->password)) {
+                return $user;
+            }
+            
+            return null;
+        });
     }
 }

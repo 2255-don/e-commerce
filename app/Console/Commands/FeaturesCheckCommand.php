@@ -49,7 +49,7 @@ class FeaturesCheckCommand extends Command
 
             if ($this->option('fix')) {
                 $this->warn('Removing orphaned features...');
-                \App\Models\Feature::whereIn('slug', $result['orphaned'])->delete();
+                \Modules\Identity\Entities\Feature::whereIn('slug', $result['orphaned'])->delete();
                 $this->info('✓ Orphaned features removed.');
             } else {
                 $this->comment('Run with --fix to automatically remove these features.');

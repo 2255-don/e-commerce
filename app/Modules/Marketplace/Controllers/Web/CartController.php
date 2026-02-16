@@ -15,8 +15,44 @@ class CartController extends Controller
     
     public function index()
     {
-        $cart = $this->cartService->getCart(auth()->id());
-        return view('pages.cart.index', compact('cart'));
+        $cart = $this->cartService->getCartDetails(auth()->id());
+        $total = $this->cartService->getCartTotal(auth()->id())->getAmount();
+        
+        return view('marketplace::cart', compact('cart', 'total'));
+    }
+
+    public function getSidebar()
+    {
+        $cart = $this->cartService->getCartDetails(auth()->id());
+        $total = $this->cartService->getCartTotal(auth()->id())->getAmount();
+        
+        $html = view('marketplace::cart.sidebar', compact('cart', 'total'))->render();
+        
+        return response()->json(['html' => $html]);
+    }
+    
+    public function addAjax(string $productId)
+    {
+        try {
+            $dto = AddToCartDTO::fromRequest([
+                'product_id' => $productId,
+                'quantity' => 1,
+            ], auth()->id());
+            
+            $cart = $this->cartService->addToCart($dto);
+            $cartCount = auth()->user()->cartItemsCount();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Product added to cart',
+                'cartCount' => $cartCount,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
     
     public function add(Request $request)

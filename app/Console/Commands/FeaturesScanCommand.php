@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Feature;
+use Modules\Identity\Entities\Feature;
 use App\Models\Module;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;

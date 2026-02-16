@@ -25,7 +25,7 @@ class CheckoutController extends Controller
             return redirect()->route('cart.index')->with('error', 'Your cart is empty');
         }
         
-        return view('pages.checkout.index', compact('cart'));
+        return view('marketplace::checkout.index', compact('cart'));
     }
     
     public function process(Request $request)
@@ -55,6 +55,6 @@ class CheckoutController extends Controller
             abort(404);
         }
         
-        return view('pages.checkout.success', compact('order'));
+        return view('marketplace::checkout.success', compact('order'));
     }
 }

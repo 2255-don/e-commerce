@@ -69,7 +69,7 @@ class WalletController extends Controller
                 );
                 
                 return redirect()
-                    ->route('dashboard')
+                    ->route('profile.show')
                     ->with('success', "Wallet rechargé avec succès! Solde: {$transaction->formatted_amount}");
             }
             

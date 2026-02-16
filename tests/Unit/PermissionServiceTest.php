@@ -2,11 +2,11 @@
 
 namespace Tests\Unit;
 
-use App\Models\Feature;
+use Modules\Identity\Entities\Feature;
 use App\Models\Module;
 use App\Models\Permission;
 use App\Models\Role;
-use App\Models\User;
+use Modules\Identity\Entities\User;
 use App\Services\PermissionService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

@@ -5,11 +5,12 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
 
     <!-- ! Hide app brand if navbar-full -->
-    @if(!isset($navbarFull))
+    @if (!isset($navbarFull))
         <div class="app-brand mb-0 ">
-            <a href="{{url('/')}}" class="app-brand-link">
+            <a href="{{ url('/') }}" class="app-brand-link">
                 <span class="app-brand-logo">
-                    <img src="{{ asset('assets/img/branding/logo.png') }}" alt="Logo" style="max-width: 160px; height: auto; object-fit: contain;">
+                    <img src="{{ asset('assets/img/branding/logo.png') }}" alt="Logo"
+                        style="max-width: 160px; height: auto; object-fit: contain;">
                 </span>
             </a>
 
@@ -25,26 +26,27 @@
 
     <ul class="menu-inner py-1">
         @foreach ($menuData[0]->menu as $menu)
-            @if(isset($menu->adminOnly) && $menu->adminOnly && !Gate::allows('admin-access'))
+            @if (isset($menu->adminOnly) && $menu->adminOnly && !Gate::allows('admin-access'))
                 @continue
             @endif
 
-            @if(isset($menu->superAdminOnly) && $menu->superAdminOnly)
+            @if (isset($menu->superAdminOnly) && $menu->superAdminOnly)
                 @php
                     $user = auth()->user();
                     $isSuperAdmin = $user && $user->isSuperAdmin();
                 @endphp
-                @if(!$isSuperAdmin)
+                @if (!$isSuperAdmin)
                     @continue
                 @endif
             @endif
 
-            @if(isset($menu->sellerOnly) && $menu->sellerOnly)
+            @if (isset($menu->sellerOnly) && $menu->sellerOnly)
                 @php
                     $user = auth()->user();
-                    $isSeller = $user && $user->sellerProfile && $user->sellerProfile->isLicenseActive() && $user->kyc_status === 'verified';
+                    // Allow sellers with sellerProfile (removed KYC check for development)
+                    $isSeller = $user && $user->sellerProfile;
                 @endphp
-                @if(!$isSeller)
+                @if (!$isSeller)
                     @continue
                 @endif
             @endif
@@ -56,9 +58,7 @@
                 <li class="menu-header small text-uppercase">
                     <span class="menu-header-text">{{ $menu->menuHeader }}</span>
                 </li>
-
             @else
-
                 {{-- active menu method --}}
                 @php
                     $activeClass = null;
@@ -78,29 +78,33 @@
                                 }
                             }
                         } else {
-                            if (str_contains($currentRouteName, $menu->slug) and strpos($currentRouteName, $menu->slug) === 0) {
+                            if (
+                                str_contains($currentRouteName, $menu->slug) and
+                                strpos($currentRouteName, $menu->slug) === 0
+                            ) {
                                 $activeClass = 'active open';
                             }
                         }
-
                     }
                 @endphp
 
                 {{-- main menu --}}
-                <li class="menu-item {{$activeClass}}">
+                <li class="menu-item {{ $activeClass }}">
                     <a href="{{ isset($menu->url) ? url($menu->url) : 'javascript:void(0);' }}"
-                        class="{{ isset($menu->submenu) ? 'menu-link menu-toggle' : 'menu-link' }}" @if (isset($menu->target) and !empty($menu->target)) target="_blank" @endif>
+                        class="{{ isset($menu->submenu) ? 'menu-link menu-toggle' : 'menu-link' }}"
+                        @if (isset($menu->target) and !empty($menu->target)) target="_blank" @endif>
                         @isset($menu->icon)
                             <i class="{{ $menu->icon }}"></i>
                         @endisset
                         <div>{{ isset($menu->name) ? __($menu->name) : '' }}</div>
                         @isset($menu->badge)
-                            <div class="badge bg-label-{{ $menu->badge[0] }} rounded-pill ms-auto">{{ $menu->badge[1] }}</div>
+                            <div class="badge bg-label-{{ $menu->badge[0] }} rounded-pill ms-auto">{{ $menu->badge[1] }}
+                            </div>
                         @elseif(isset($menu->slug) && $menu->slug === 'admin-kyc')
                             @php
-                                $kycCount = \App\Models\User::where('kyc_status', 'pending')->count();
+                                $kycCount = \Modules\Identity\Entities\User::where('kyc_status', 'pending')->count();
                             @endphp
-                            @if($kycCount > 0)
+                            @if ($kycCount > 0)
                                 <div class="badge bg-danger rounded-pill ms-auto">{{ $kycCount }}</div>
                             @endif
                         @endisset

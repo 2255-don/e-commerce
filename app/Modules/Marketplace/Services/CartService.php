@@ -69,4 +69,58 @@ class CartService
         
         return $cart->getTotalAmount();
     }
+
+    /**
+     * Obtenir les détails du panier groupés par vendeur
+     */
+    public function getCartDetails(string $userId): array
+    {
+        $cart = $this->getCart($userId);
+        
+        if (!$cart || $cart->items->isEmpty()) {
+            return [];
+        }
+        
+        $details = [];
+        
+        // Eager load relationships
+        $cart->load(['items.product.seller.sellerProfile', 'items.product.images']);
+        
+        foreach ($cart->items as $item) {
+            $product = $item->product;
+            
+            if (!$product) continue;
+            
+            $sellerId = $product->seller_id;
+            
+            if (!isset($details[$sellerId])) {
+                $shopName = 'Boutique';
+                if ($product->seller && $product->seller->sellerProfile) {
+                    $shopName = $product->seller->sellerProfile->shop_name;
+                }
+                
+                $details[$sellerId] = [
+                    'shop_name' => $shopName,
+                    'items' => [],
+                    'subtotal' => 0.0,
+                ];
+            }
+            
+            $itemTotal = $item->quantity * $item->price_at_addition;
+            
+            $details[$sellerId]['items'][] = [
+                'id' => $item->id,
+                'image' => $product->thumbnail_url,
+                'title' => $product->title,
+                'price' => $item->price_at_addition,
+                'quantity' => $item->quantity,
+                'max_stock' => $product->stock_quantity,
+                'subtotal' => $itemTotal,
+            ];
+            
+            $details[$sellerId]['subtotal'] += $itemTotal;
+        }
+        
+        return $details;
+    }
 }

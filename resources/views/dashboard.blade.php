@@ -3,13 +3,13 @@
 @section('title', 'Dashboard - Jouan-Sugu')
 
 @section('vendor-style')
-    <link rel="stylesheet" href="{{asset('assets/vendor/libs/apex-charts/apex-charts.css')}}" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/apex-charts/apex-charts.css') }}" />
 @endsection
 
 @section('page-style')
     <!-- Boxicons -->
     <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
-    
+
     <style>
         /* Dashboard Custom Styles */
         .dashboard-header {
@@ -39,8 +39,15 @@
         }
 
         @keyframes float {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            50% { transform: translate(-30px, 30px) rotate(5deg); }
+
+            0%,
+            100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+
+            50% {
+                transform: translate(-30px, 30px) rotate(5deg);
+            }
         }
 
         .welcome-content {
@@ -127,7 +134,7 @@
 @endsection
 
 @section('vendor-script')
-    <script src="{{asset('assets/vendor/libs/apex-charts/apexcharts.js')}}"></script>
+    <script src="{{ asset('assets/vendor/libs/apex-charts/apexcharts.js') }}"></script>
 @endsection
 
 @section('content')
@@ -143,7 +150,7 @@
                         Gérez votre boutique, wallet et commandes depuis votre tableau de bord.
                     </p>
                     <div class="quick-actions">
-                        @if(auth()->user()->isSeller())
+                        @if (auth()->user()->isSeller())
                             <a href="{{ route('seller.products.create') }}" class="quick-action-btn">
                                 <i class='bx bx-plus-circle'></i>
                                 Nouveau Produit
@@ -175,7 +182,8 @@
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="flex-grow-1">
                         <p class="stat-label">Balance Wallet</p>
-                        <h3 class="stat-value">${{ number_format(auth()->user()->wallet?->balance ?? 0, 2, ',', ' ') }}</h3>
+                        <h3 class="stat-value">
+                            ${{ auth()->user()->sellerProfile?->shop_name }}</h3>
                         <small class="text-success">
                             <i class='bx bx-trending-up'></i>
                             Disponible
@@ -228,7 +236,7 @@
 
         <!-- Seller Stats (if seller) -->
         <div class="col-xl-3 col-sm-6">
-            @if(auth()->user()->isSeller())
+            @if (auth()->user()->isSeller())
                 <div class="card-stat animate-fade-in-up" style="animation-delay: 0.4s;">
                     <div class="d-flex justify-content-between align-items-start">
                         <div class="flex-grow-1">
@@ -280,7 +288,8 @@
                 <div class="chart-body">
                     <div id="activityChart"></div>
                     <div class="text-center py-5">
-                        <i class='bx bx-line-chart' style="font-size: 4rem; color: var(--brand-gold-light); opacity: 0.3;"></i>
+                        <i class='bx bx-line-chart'
+                            style="font-size: 4rem; color: var(--brand-gold-light); opacity: 0.3;"></i>
                         <p class="text-muted mt-3">Graphiques et statistiques à venir...</p>
                     </div>
                 </div>

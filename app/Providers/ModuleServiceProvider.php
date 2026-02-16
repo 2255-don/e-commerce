@@ -50,12 +50,20 @@ class ModuleServiceProvider extends ServiceProvider
             $webPath = app_path("Modules/{$module}/Routes/web.php");
             $apiPath = app_path("Modules/{$module}/Routes/api.php");
 
+            // Load web routes with web middleware group to enable session/auth
             if (file_exists($webPath)) {
-                $this->loadRoutesFrom($webPath);
+                \Illuminate\Support\Facades\Route::middleware('web')->group(function () use ($webPath) {
+                    $this->loadRoutesFrom($webPath);
+                });
             }
 
+            // Load API routes with api middleware group
             if (file_exists($apiPath)) {
-                $this->loadRoutesFrom($apiPath);
+                \Illuminate\Support\Facades\Route::prefix('api')
+                    ->middleware('api')
+                    ->group(function () use ($apiPath) {
+                        $this->loadRoutesFrom($apiPath);
+                    });
             }
         }
     }

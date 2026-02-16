@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
-use App\Models\User;
+use Modules\Identity\Entities\User;
 
 class AppServiceProvider extends ServiceProvider
 {

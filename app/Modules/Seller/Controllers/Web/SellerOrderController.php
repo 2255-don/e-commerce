@@ -14,7 +14,7 @@ class SellerOrderController extends Controller
     public function index()
     {
         $orders = $this->orderRepository->getSellerOrders(auth()->id(), 15);
-        return view('pages.seller.orders.index', compact('orders'));
+        return view('seller::orders.index', compact('orders'));
     }
     
     public function show(string $id)
@@ -28,6 +28,6 @@ class SellerOrderController extends Controller
             abort(404);
         }
         
-        return view('pages.seller.orders.show', compact('order'));
+        return view('seller::orders.show', compact('order'));
     }
 }

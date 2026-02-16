@@ -7,7 +7,7 @@ use Modules\Marketplace\Interfaces\CartRepositoryInterface;
 use Modules\Marketplace\DTOs\PlaceOrderDTO;
 use Modules\Marketplace\Entities\Order;
 use Modules\Marketplace\ValueObjects\OrderStatus;
-use Modules\Marketplace\ValueObjects\TransactionReference;
+use Modules\Fintech\ValueObjects\TransactionReference;
 use Modules\Fintech\Services\WalletService;
 use Modules\Fintech\DTOs\TransferDTO;
 use Illuminate\Support\Facades\DB;
@@ -82,7 +82,7 @@ class OrderService
         
         if ($method === 'wallet') {
             // Débiter le wallet de l'acheteur
-            $totalAmount = $order->getTotalAmount();
+            $totalAmount = $order->getTotalAmount()->getAmount();
             
             $this->walletService->debitForPayment(
                 $order->buyer_id,

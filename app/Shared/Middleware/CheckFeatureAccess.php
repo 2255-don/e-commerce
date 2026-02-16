@@ -34,10 +34,24 @@ class CheckFeatureAccess
             return $next($request);
         }
 
+        // 🔍 DEBUG: Log détaillé pour investigation
+        \Illuminate\Support\Facades\Log::info("🔍 CheckFeatureAccess: START", [
+            'route' => $routeName,
+            'user_id' => $user->id,
+            'user_email' => $user->email,
+            'user_roles' => $user->roles->pluck('name')->toArray(),
+        ]);
+
         // Vérifier si l'utilisateur peut accéder à cette route
         if (!$this->canAccessRoute($user, $routeName)) {
+            \Illuminate\Support\Facades\Log::warning("❌ CheckFeatureAccess: ACCESS DENIED", [
+                'route' => $routeName,
+                'user_id' => $user->id,
+            ]);
             abort(403, __('You do not have permission to access this resource'));
         }
+
+        \Illuminate\Support\Facades\Log::info("✅ CheckFeatureAccess: ACCESS GRANTED for '$routeName'");
 
         return $next($request);
     }
@@ -62,13 +76,24 @@ class CheckFeatureAccess
 
         // Feature n'existe pas → Autoriser (permissif)
         if (!$feature) {
+            \Illuminate\Support\Facades\Log::info("CheckFeatureAccess: Feature '$routeName' not found or not route type. Allowed.");
             return true;
         }
 
         // Feature n'a pas de permissions → Autoriser (permissif)
         if ($feature->permissions->isEmpty()) {
+            \Illuminate\Support\Facades\Log::info("✅ CheckFeatureAccess: Feature '$routeName' found but has NO permissions. Access ALLOWED (permissive).", [
+                'permissions_count' => $feature->permissions->count(),
+                'feature_id' => $feature->id,
+            ]);
             return true;
         }
+
+        // 🔍 DEBUG: La feature a des permissions, analysons-les
+        \Illuminate\Support\Facades\Log::info("🔍 CheckFeatureAccess: Feature '$routeName' has permissions", [
+            'permissions_count' => $feature->permissions->count(),
+            'permissions' => $feature->permissions->pluck('name')->toArray(),
+        ]);
 
         // Vérifier si au moins une permission est liée à des rôles
         $permissionsWithRoles = $feature->permissions->filter(function ($permission) {
@@ -77,8 +102,17 @@ class CheckFeatureAccess
 
         // Aucune permission n'est liée à des rôles → Autoriser (permissif)
         if ($permissionsWithRoles->isEmpty()) {
+            \Illuminate\Support\Facades\Log::info("✅ CheckFeatureAccess: Feature '$routeName' has permissions but NONE linked to roles. Access ALLOWED (permissive).", [
+                'total_permissions' => $feature->permissions->count(),
+                'permissions_with_roles' => 0,
+            ]);
             return true;
         }
+
+        // 🔍 DEBUG: Des permissions sont liées à des rôles, vérifier l'accès utilisateur
+        \Illuminate\Support\Facades\Log::info("🔍 CheckFeatureAccess: Checking role-based access", [
+            'permissions_with_roles' => $permissionsWithRoles->count(),
+        ]);
 
         // Récupérer tous les IDs de rôles requis
         $requiredRoleIds = $permissionsWithRoles
@@ -90,6 +124,18 @@ class CheckFeatureAccess
         $userRoleIds = $user->roles->pluck('id');
 
         // Vérifier si l'utilisateur a au moins un des rôles requis
-        return $userRoleIds->intersect($requiredRoleIds)->isNotEmpty();
+        $allowed = $userRoleIds->intersect($requiredRoleIds)->isNotEmpty();
+        
+        if (!$allowed) {
+            \Illuminate\Support\Facades\Log::warning("❌ CheckFeatureAccess: Access DENIED for '$routeName'", [
+                'user_role_ids' => $userRoleIds->toArray(),
+                'required_role_ids' => $requiredRoleIds->toArray(),
+                'intersection' => $userRoleIds->intersect($requiredRoleIds)->toArray(),
+            ]);
+        } else {
+            \Illuminate\Support\Facades\Log::info("✅ CheckFeatureAccess: Access GRANTED for '$routeName' (user has required role)");
+        }
+
+        return $allowed;
     }
 }

@@ -19,7 +19,7 @@ class MarketplaceController extends Controller
         $products = $this->productRepository->search([], 12);
         $categories = $this->categoryRepository->getRootCategories();
         
-        return view('pages.marketplace.index', compact('products', 'categories'));
+        return view('marketplace::index', compact('products', 'categories'));
     }
     
     public function show(string $slug)
@@ -30,7 +30,7 @@ class MarketplaceController extends Controller
             abort(404, 'Product not found');
         }
         
-        return view('pages.marketplace.show', compact('product'));
+        return view('marketplace::show', compact('product'));
     }
     
     public function search(Request $request)
@@ -45,6 +45,6 @@ class MarketplaceController extends Controller
         $products = $this->productRepository->search($filters, 12);
         $categories = $this->categoryRepository->getRootCategories();
         
-        return view('pages.marketplace.index', compact('products', 'categories'));
+        return view('marketplace::index', compact('products', 'categories'));
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Feature;
+use Modules\Identity\Entities\Feature;
 use App\Models\Module;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;

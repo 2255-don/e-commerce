@@ -163,4 +163,12 @@ class Cart extends Model
     {
         return $this->hasMany(CartItem::class);
     }
+    
+    /**
+     * Total attribute for view access
+     */
+    public function getTotalAttribute()
+    {
+        return $this->getTotalAmount()->getAmount();
+    }
 }

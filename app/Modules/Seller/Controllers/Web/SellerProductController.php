@@ -8,6 +8,7 @@ use Modules\Marketplace\DTOs\CreateProductDTO;
 use Modules\Marketplace\DTOs\UpdateProductDTO;
 use Modules\Marketplace\Services\StockService;
 use Illuminate\Http\Request;
+use Modules\Marketplace\Entities\Category;
 
 class SellerProductController extends Controller
 {
@@ -19,12 +20,22 @@ class SellerProductController extends Controller
     public function index()
     {
         $products = $this->productRepository->getBySeller(auth()->id(), 15);
-        return view('pages.seller.products.index', compact('products'));
+        $seller = auth()->user()->sellerProfile;
+        $shopLogoUrl = $seller && $seller->shop_logo_url 
+            ? asset('storage/' . $seller->shop_logo_url) 
+            : asset('assets/img/avatars/default-shop.png');
+        
+        return view('seller::products.index', compact('products', 'seller', 'shopLogoUrl'));
     }
     
     public function create()
     {
-        return view('pages.seller.products.create');
+        $categories = Category::all();
+        return view('seller::products.form', [
+            'isEdit' => false,
+            'product' => null,
+            'categories' => $categories
+        ]);
     }
     
     public function store(Request $request)
@@ -54,7 +65,12 @@ class SellerProductController extends Controller
             abort(404);
         }
         
-        return view('pages.seller.products.edit', compact('product'));
+        $categories = Category::all();
+        return view('seller::products.form', [
+            'isEdit' => true,
+            'product' => $product,
+            'categories' => $categories
+        ]);
     }
     
     public function update(Request $request, string $id)

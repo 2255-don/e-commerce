@@ -27,7 +27,7 @@ class OrderRepository implements OrderRepositoryInterface
     
     public function getSellerOrders(string $sellerId, int $perPage = 15)
     {
-        return Order::whereHas('items', function($q) use ($sellerId) {
+        return Order::whereHas('items.product', function($q) use ($sellerId) {
             $q->where('seller_id', $sellerId);
         })
         ->with(['items.product', 'buyer'])

@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Feature;
+use Modules\Identity\Entities\Feature;
 
 class FeatureAccessService
 {

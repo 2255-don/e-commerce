@@ -12,8 +12,14 @@
     {
       "name": "Parcourir",
       "icon": "menu-icon tf-icons ti ti-shopping-cart",
-      "url": "boutique",
-      "slug": "marketplace.index"
+      "url": "marketplace",
+      "slug": [
+        "marketplace.index",
+        "marketplace.show",
+        "cart.index",
+        "checkout.index",
+        "checkout.success"
+      ]
     },
     {
       "menuHeader": "Mes Achats"
@@ -46,6 +52,20 @@
       "icon": "menu-icon tf-icons ti ti-building-store",
       "url": "seller/dashboard",
       "slug": "seller.dashboard",
+      "sellerOnly": true
+    },
+    {
+      "name": "Mes Produits",
+      "icon": "menu-icon tf-icons ti ti-box",
+      "url": "seller/products",
+      "slug": "seller.products.index",
+      "sellerOnly": true
+    },
+    {
+      "name": "Commandes",
+      "icon": "menu-icon tf-icons ti ti-shopping-cart",
+      "url": "seller/orders",
+      "slug": "seller.orders.index",
       "sellerOnly": true
     },
     {

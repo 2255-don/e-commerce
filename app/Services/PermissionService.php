@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Feature;
+use Modules\Identity\Entities\Feature;
 use App\Models\Permission;
 use App\Models\Role;
 use Illuminate\Support\Str;

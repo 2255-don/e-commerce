@@ -191,7 +191,7 @@ class Product extends Model
      */
     public function seller(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'seller_id');
+        return $this->belongsTo(\Modules\Seller\Entities\SellerProfile::class, 'seller_id');
     }
     
     /**

@@ -74,4 +74,12 @@ class CartItem extends Model
     {
         return $this->getTotal()->format();
     }
+
+    /**
+     * Subtotal attribute for view access
+     */
+    public function getSubtotalAttribute()
+    {
+        return $this->getTotal()->getAmount();
+    }
 }

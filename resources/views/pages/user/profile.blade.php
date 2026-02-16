@@ -1,181 +1,251 @@
-
-
 @extends('layouts/layoutMaster')
 
 @section('title', 'Profil Utilisateur')
 
 @section('vendor-style')
-<link rel="stylesheet" href="{{asset('assets/vendor/libs/select2/select2.css')}}" />
-<link rel="stylesheet" href="{{asset('assets/vendor/libs/formvalidation/dist/css/formValidation.min.css')}}" />
-<link rel="stylesheet" href="{{asset('assets/vendor/libs/animate-css/animate.css')}}" />
-<link rel="stylesheet" href="{{asset('assets/vendor/libs/sweetalert2/sweetalert2.css')}}" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/select2/select2.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/formvalidation/dist/css/formValidation.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/animate-css/animate.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.css') }}" />
 @endsection
 
 @section('vendor-script')
-<script src="{{asset('assets/vendor/libs/select2/select2.js')}}"></script>
-<script src="{{asset('assets/vendor/libs/formvalidation/dist/js/FormValidation.min.js')}}"></script>
-<script src="{{asset('assets/vendor/libs/formvalidation/dist/js/plugins/Bootstrap5.min.js')}}"></script>
-<script src="{{asset('assets/vendor/libs/formvalidation/dist/js/plugins/AutoFocus.min.js')}}"></script>
-<script src="{{asset('assets/vendor/libs/cleavejs/cleave.js')}}"></script>
-<script src="{{asset('assets/vendor/libs/cleavejs/cleave-phone.js')}}"></script>
-<script src="{{asset('assets/vendor/libs/sweetalert2/sweetalert2.js')}}"></script>
+    <script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/formvalidation/dist/js/FormValidation.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/formvalidation/dist/js/plugins/Bootstrap5.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/formvalidation/dist/js/plugins/AutoFocus.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/cleavejs/cleave.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/cleavejs/cleave-phone.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
 @endsection
 
 @section('content')
-<h4 class="fw-bold py-3 mb-4">
-    <span class="text-muted fw-light">Paramètres /</span> Compte
-</h4>
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Paramètres /</span> Compte
+    </h4>
 
-<div class="row">
-    <div class="col-md-12">
-        <ul class="nav nav-pills flex-column flex-md-row mb-4">
-            <li class="nav-item"><a class="nav-item nav-link active" href="javascript:void(0);"><i class="ti-xs ti ti-user-check me-1"></i> Compte</a></li>
-        </ul>
-        <div class="card mb-4">
-            <h5 class="card-header">Détails du profil</h5>
-            <!-- Account -->
-            <div class="card-body">
-                <div class="d-flex align-items-start align-items-sm-center gap-4">
-                    <img src="{{ $user->profile_photo_url }}" alt="user-avatar" class="d-block w-px-100 h-px-100 rounded" id="uploadedAvatar" />
-                    <div class="button-wrapper">
-                        <div class="d-flex flex-wrap gap-2 mb-3">
-                            <a href="{{ route('wallet.recharge') }}" class="btn btn-label-success">
-                                <i class="ti ti-wallet me-1"></i> Wallet : {{ number_format($user->wallet->balance ?? 0, 0, ',', ' ') }} FCFA
-                            </a>
-                            
-                            @if($user->sellerProfile && $user->sellerProfile->isLicenseActive())
-                                <button class="btn btn-secondary" disabled>
-                                    <i class="ti ti-badge me-1"></i> Vendeur Actif (Expire le {{ $user->sellerProfile->licence_expire_at->format('d/m/Y') }})
-                                </button>
-                                
-                                {{-- KYC Status Badge --}}
-                                @if($user->kyc_status === 'verified')
-                                    <span class="badge bg-label-success ms-2"><i class="ti ti-shield-check me-1"></i> Identité Vérifiée</span>
-                                @elseif($user->kyc_status === 'pending')
-                                    <span class="badge bg-label-warning ms-2"><i class="ti ti-clock me-1"></i> KYC en attente</span>
-                                @elseif($user->kyc_status === 'rejected')
-                                    <a href="{{ route('kyc.form') }}" class="btn btn-label-danger ms-2"><i class="ti ti-alert-triangle me-1"></i> KYC Rejeté (Réessayer)</a>
-                                @else
-                                    <a href="{{ route('kyc.form') }}" class="btn btn-label-info ms-2"><i class="ti ti-file-text me-1"></i> Valider mon Identité</a>
-                                @endif
-                            @else
-                                <a href="{{ route('seller.license') }}" class="btn btn-label-primary">
-                                    <i class="ti ti-shopping-cart me-1"></i> {{ $user->sellerProfile ? 'Renouveler Licence' : 'Devenir Vendeur' }} (5000 FCFA)
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="nav nav-pills flex-column flex-md-row mb-4">
+                <li class="nav-item"><a class="nav-item nav-link active" href="javascript:void(0);"><i
+                            class="ti-xs ti ti-user-check me-1"></i> Compte</a></li>
+            </ul>
+            <div class="card mb-4">
+                <h5 class="card-header">Détails du profil</h5>
+                <!-- Account -->
+                <div class="card-body">
+                    <div class="d-flex align-items-start align-items-sm-center gap-4">
+                        <img src="{{ $user->profile_photo_url }}" alt="user-avatar"
+                            class="d-block w-px-100 h-px-100 rounded" id="uploadedAvatar" />
+                        <div class="button-wrapper">
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <a href="{{ route('wallet.recharge') }}" class="btn btn-label-success">
+                                    <i class="ti ti-wallet me-1"></i> Wallet :
+                                    {{ number_format($user->wallet->balance ?? 0, 0, ',', ' ') }} FCFA
                                 </a>
-                            @endif
+
+                                @if ($user->sellerProfile && $user->sellerProfile->status === 'approved')
+                                    {{-- Show license status --}}
+                                    @php
+                                        $profile = $user->sellerProfile;
+                                        $expiresAt = $profile->licence_expire_at;
+                                        $isActive = $profile->isLicenseActive();
+                                        $daysRemaining =
+                                            $expiresAt && $expiresAt->isFuture()
+                                                ? now()->diffInDays($expiresAt, false)
+                                                : 0;
+                                        $canRenew = $isActive && $expiresAt && $daysRemaining <= 3;
+                                    @endphp
+
+                                    @if ($isActive)
+                                        <button class="btn btn-secondary" disabled>
+                                            <i class="ti ti-badge me-1"></i> Vendeur Actif (Expire le
+                                            {{ $profile->formatted_license_expiry }})
+                                        </button>
+                                    @else
+                                        <button class="btn btn-danger" disabled>
+                                            <i class="ti ti-alert-triangle me-1"></i> Licence Expirée - Contactez l'admin
+                                        </button>
+                                    @endif
+
+                                    {{-- Renewal Button ONLY in last 3 days --}}
+                                    @if ($canRenew)
+                                        <form method="POST" action="{{ route('seller.license.renew') }}" class="d-inline">
+                                            @csrf
+                                            <button type="submit" class="btn btn-warning">
+                                                <i class="ti ti-refresh me-1"></i> Renouveler Licence (5000 FCFA)
+                                            </button>
+                                        </form>
+                                    @elseif($isActive && $daysRemaining > 3)
+                                        <span class="badge bg-label-info">
+                                            <i class="ti ti-clock me-1"></i> {{ floor($daysRemaining) }} jours avant
+                                            expiration
+                                        </span>
+                                    @endif
+
+                                    {{-- KYC Status Badge --}}
+                                    @if ($user->kyc_status === 'verified')
+                                        <span class="badge bg-label-success ms-2"><i class="ti ti-shield-check me-1"></i>
+                                            Identité Vérifiée</span>
+                                    @elseif($user->kyc_status === 'pending')
+                                        <span class="badge bg-label-warning ms-2"><i class="ti ti-clock me-1"></i> KYC en
+                                            attente</span>
+                                    @elseif($user->kyc_status === 'rejected')
+                                        <a href="{{ route('kyc.form') }}" class="btn btn-label-danger ms-2"><i
+                                                class="ti ti-alert-triangle me-1"></i> KYC Rejeté (Réessayer)</a>
+                                    @else
+                                        <a href="{{ route('kyc.form') }}" class="btn btn-label-info ms-2"><i
+                                                class="ti ti-file-text me-1"></i> Valider mon Identité</a>
+                                    @endif
+                                @elseif($user->sellerProfile && $user->sellerProfile->status === 'pending')
+                                    {{-- Pending Seller Application --}}
+                                    <button class="btn btn-warning" disabled>
+                                        <i class="ti ti-clock me-1"></i> Demande vendeur en attente d'approbation
+                                    </button>
+                                @elseif($user->sellerProfile && $user->sellerProfile->status === 'rejected')
+                                    {{-- Rejected Seller --}}
+                                    <a href="{{ route('seller.license') }}" class="btn btn-label-danger">
+                                        <i class="ti ti-alert-triangle me-1"></i> Demande rejetée - Réessayer
+                                    </a>
+                                @elseif($user->sellerProfile)
+                                    {{-- Expired or Inactive License - One-click Renewal --}}
+                                    <form method="POST" action="{{ route('seller.license.renew') }}" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-label-primary">
+                                            <i class="ti ti-shopping-cart me-1"></i> Renouveler Licence (5000 FCFA)
+                                        </button>
+                                    </form>
+                                @else
+                                    {{-- No Seller Profile --}}
+                                    <a href="{{ route('seller.license') }}" class="btn btn-label-primary">
+                                        <i class="ti ti-shopping-cart me-1"></i> Devenir Vendeur (5000 FCFA)
+                                    </a>
+                                @endif
+                            </div>
+                            <label for="upload" class="btn btn-primary me-2 mb-3" tabindex="0">
+                                <span class="d-none d-sm-block">Changer la photo</span>
+                                <i class="ti ti-upload d-block d-sm-none"></i>
+                                <input type="file" id="upload" class="account-file-input" hidden
+                                    accept="image/png, image/jpeg" />
+                            </label>
+                            <button type="button" class="btn btn-label-secondary account-image-reset mb-3">
+                                <i class="ti ti-refresh-dot d-block d-sm-none"></i>
+                                <span class="d-none d-sm-block">Réinitialiser</span>
+                            </button>
                         </div>
-                        <label for="upload" class="btn btn-primary me-2 mb-3" tabindex="0">
-                            <span class="d-none d-sm-block">Changer la photo</span>
-                            <i class="ti ti-upload d-block d-sm-none"></i>
-                            <input type="file" id="upload" class="account-file-input" hidden accept="image/png, image/jpeg" />
-                        </label>
-                        <button type="button" class="btn btn-label-secondary account-image-reset mb-3">
-                            <i class="ti ti-refresh-dot d-block d-sm-none"></i>
-                            <span class="d-none d-sm-block">Réinitialiser</span>
-                        </button>
                     </div>
                 </div>
-            </div>
-            <hr class="my-0">
-            <div class="card-body">
-                @if (session('status') === 'profile-updated')
-                <div class="alert alert-success alert-dismissible" role="alert">
-                    Profil mis à jour avec succès !
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                @endif
+                <hr class="my-0">
+                <div class="card-body">
+                    @if (session('status') === 'profile-updated')
+                        <div class="alert alert-success alert-dismissible" role="alert">
+                            Profil mis à jour avec succès !
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
 
-                @if ($errors->any())
-                <div class="alert alert-danger alert-dismissible" role="alert">
-                    <ul class="mb-0">
-                        @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                @endif
+                    @if ($errors->any())
+                        <div class="alert alert-danger alert-dismissible" role="alert">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
 
-                <form id="formAccountSettings" method="POST" action="{{ route('profile.update') }}">
-                    @csrf
-                    <x-feature-section feature="user.profile.basic-info">
-                        <div class="row">
-                            <div class="mb-3 col-md-6">
-                                <label for="name" class="form-label">Nom complet</label>
-                                <input class="form-control" type="text" id="name" name="name" value="{{ old('name', $user->name) }}" autofocus />
-                            </div>
-                            <div class="mb-3 col-md-6">
-                                <label for="email" class="form-label">E-mail</label>
-                                <input class="form-control" type="text" id="email" name="email" value="{{ old('email', $user->email) }}" placeholder="john.doe@example.com" />
-                            </div>
-                            <div class="mb-3 col-md-6">
-                                <label class="form-label" for="phone_number">Numéro de téléphone</label>
-                                <div class="input-group input-group-merge">
-                                    <span class="input-group-text">FR (+33)</span>
-                                    <input type="text" id="phone_number" name="phone_number" class="form-control" value="{{ old('phone_number', $user->phone_number) }}" placeholder="06 12 34 56 78" />
+                    <form id="formAccountSettings" method="POST" action="{{ route('profile.update') }}">
+                        @csrf
+                        <x-feature-section feature="user.profile.basic-info">
+                            <div class="row">
+                                <div class="mb-3 col-md-6">
+                                    <label for="name" class="form-label">Nom complet</label>
+                                    <input class="form-control" type="text" id="name" name="name"
+                                        value="{{ old('name', $user->name) }}" autofocus />
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label for="email" class="form-label">E-mail</label>
+                                    <input class="form-control" type="text" id="email" name="email"
+                                        value="{{ old('email', $user->email) }}" placeholder="john.doe@example.com" />
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label class="form-label" for="phone_number">Numéro de téléphone</label>
+                                    <div class="input-group input-group-merge">
+                                        <span class="input-group-text">FR (+33)</span>
+                                        <input type="text" id="phone_number" name="phone_number" class="form-control"
+                                            value="{{ old('phone_number', $user->phone_number) }}"
+                                            placeholder="06 12 34 56 78" />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        @if($user->kyc_status === 'verified' && $user->sellerProfile && $user->sellerProfile->shop_name)
-                        <div class="row">
-                            <div class="mb-3 col-md-12">
-                                <label for="shop_name" class="form-label">Nom de la boutique</label>
-                                <input class="form-control" type="text" id="shop_name" name="shop_name" value="{{ old('shop_name', $user->sellerProfile->shop_name) }}" />
-                            </div>
-                        </div>
-                        @endif
-                    </x-feature-section>
 
-                    <hr class="my-4">
-                    <h5 class="mb-4">Changer le mot de passe (optionnel)</h5>
-                    
-                    <x-feature-section feature="user.profile.change-password">
-                    
-                    <div class="row">
-                        <div class="mb-3 col-md-6 form-password-toggle">
-                            <label class="form-label" for="password">Nouveau mot de passe</label>
-                            <div class="input-group input-group-merge">
-                                <input class="form-control" type="password" id="password" name="password" placeholder="············" />
-                                <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
-                            </div>
-                        </div>
-                        <div class="mb-3 col-md-6 form-password-toggle">
-                            <label class="form-label" for="password_confirmation">Confirmer le nouveau mot de passe</label>
-                            <div class="input-group input-group-merge">
-                                <input class="form-control" type="password" id="password_confirmation" name="password_confirmation" placeholder="············" />
-                                <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
-                            </div>
-                        </div>
-                    </div>
-                    </x-feature-section>
+                            @if ($user->kyc_status === 'verified' && $user->sellerProfile && $user->sellerProfile->shop_name)
+                                <div class="row">
+                                    <div class="mb-3 col-md-12">
+                                        <label for="shop_name" class="form-label">Nom de la boutique</label>
+                                        <input class="form-control" type="text" id="shop_name" name="shop_name"
+                                            value="{{ old('shop_name', $user->sellerProfile->shop_name) }}" />
+                                    </div>
+                                </div>
+                            @endif
+                        </x-feature-section>
 
-                    <div class="mt-2">
-                        <button type="submit" class="btn btn-primary me-2">Enregistrer les modifications</button>
-                        <button type="reset" class="btn btn-label-secondary">Annuler</button>
-                    </div>
-                </form>
-            </div>
-            <!-- /Account -->
-        </div>
-        <div class="card">
-            <h5 class="card-header">Supprimer le compte</h5>
-            <div class="card-body">
-                <div class="mb-3 col-12 mb-0">
-                    <div class="alert alert-warning">
-                        <h5 class="alert-heading mb-1">Êtes-vous sûr de vouloir supprimer votre compte ?</h5>
-                        <p class="mb-0">Une fois que vous supprimez votre compte, il n'y a pas de retour en arrière. S'il vous plaît soyez certain.</p>
-                    </div>
+                        <hr class="my-4">
+                        <h5 class="mb-4">Changer le mot de passe (optionnel)</h5>
+
+                        <x-feature-section feature="user.profile.change-password">
+
+                            <div class="row">
+                                <div class="mb-3 col-md-6 form-password-toggle">
+                                    <label class="form-label" for="password">Nouveau mot de passe</label>
+                                    <div class="input-group input-group-merge">
+                                        <input class="form-control" type="password" id="password" name="password"
+                                            placeholder="············" />
+                                        <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-md-6 form-password-toggle">
+                                    <label class="form-label" for="password_confirmation">Confirmer le nouveau mot de
+                                        passe</label>
+                                    <div class="input-group input-group-merge">
+                                        <input class="form-control" type="password" id="password_confirmation"
+                                            name="password_confirmation" placeholder="············" />
+                                        <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </x-feature-section>
+
+                        <div class="mt-2">
+                            <button type="submit" class="btn btn-primary me-2">Enregistrer les modifications</button>
+                            <button type="reset" class="btn btn-label-secondary">Annuler</button>
+                        </div>
+                    </form>
                 </div>
-                <form id="formAccountDeactivation" onsubmit="return false">
-                    <div class="form-check mb-4">
-                        <input class="form-check-input" type="checkbox" name="accountActivation" id="accountActivation" />
-                        <label class="form-check-label" for="accountActivation">Je confirme la désactivation de mon compte</label>
+                <!-- /Account -->
+            </div>
+            <div class="card">
+                <h5 class="card-header">Supprimer le compte</h5>
+                <div class="card-body">
+                    <div class="mb-3 col-12 mb-0">
+                        <div class="alert alert-warning">
+                            <h5 class="alert-heading mb-1">Êtes-vous sûr de vouloir supprimer votre compte ?</h5>
+                            <p class="mb-0">Une fois que vous supprimez votre compte, il n'y a pas de retour en arrière.
+                                S'il vous plaît soyez certain.</p>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-danger deactivate-account">Désactiver le compte</button>
-                </form>
+                    <form id="formAccountDeactivation" onsubmit="return false">
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" name="accountActivation"
+                                id="accountActivation" />
+                            <label class="form-check-label" for="accountActivation">Je confirme la désactivation de mon
+                                compte</label>
+                        </div>
+                        <button type="submit" class="btn btn-danger deactivate-account">Désactiver le compte</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 @endsection

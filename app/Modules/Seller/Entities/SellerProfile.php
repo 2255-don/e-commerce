@@ -25,12 +25,14 @@ class SellerProfile extends Model
     protected $fillable = [
         'user_id',
         'shop_name',
+        'logo_path',
+        'kyc_document_path',
         'business_name',
         'license_number',
         'commission_rate',
         'status',
-        'license_paid_at',
-        'license_expire_at',
+        'licence_paid_at', // Fixed: was license_paid_at
+        'licence_expire_at', // Fixed: was license_expire_at
         'approved_at',
         'suspended_at',
         'rejection_reason',
@@ -40,8 +42,8 @@ class SellerProfile extends Model
     
     protected $casts = [
         'commission_rate' => 'decimal:2',
-        'license_paid_at' => 'datetime',
-        'license_expire_at' => 'datetime',
+        'licence_paid_at' => 'datetime', // Fixed: was license_paid_at
+        'licence_expire_at' => 'datetime', // Fixed: was license_expire_at
         'approved_at' => 'datetime',
         'suspended_at' => 'datetime',
         'is_active' => 'boolean',
@@ -110,7 +112,10 @@ class SellerProfile extends Model
         $this->license_number = $license->getValue();
         
         if ($expiryDate) {
-            $this->license_expire_at = $expiryDate;
+            $this->licence_expire_at = $expiryDate;
+        } else {
+            // Set license expiry to 1 year from now if not provided
+            $this->licence_expire_at = now()->addYear();
         }
         
         $this->save();
@@ -124,9 +129,13 @@ class SellerProfile extends Model
         if (empty($this->license_number)) {
             $license = LicenseNumber::generate();
             $this->license_number = $license->getValue();
-            $this->license_paid_at = now();
-            // Licence valide 1 an
-            $this->license_expire_at = now()->addYear();
+            // Set initial license paid date and expiry
+            if (!$this->licence_paid_at) {
+                $this->licence_paid_at = now();
+            }
+            if (!$this->licence_expire_at) {
+                $this->licence_expire_at = now()->addYear();
+            }
             $this->save();
         }
     }
@@ -154,8 +163,16 @@ class SellerProfile extends Model
      */
     public function isLicenseValid(): bool
     {
-        return $this->license_expire_at && 
-               $this->license_expire_at->isFuture();
+        return $this->licence_expire_at && 
+               $this->licence_expire_at->isFuture();
+    }
+
+    /**
+     * Alias pour isLicenseValid (pour compatibilité)
+     */
+    public function isLicenseActive(): bool
+    {
+        return $this->isLicenseValid();
     }
     
     /**
@@ -188,7 +205,7 @@ class SellerProfile extends Model
     
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
     
     public function products(): HasMany
@@ -213,5 +230,19 @@ class SellerProfile extends Model
     public function getFormattedCommissionAttribute(): string
     {
         return $this->getCommissionRateAsVO()->format();
+    }
+    
+    public function getFormattedLicenseExpiryAttribute(): string
+    {
+        if (!$this->licence_expire_at) {
+            return 'Non définie';
+        }
+        
+        // Ensure it's a Carbon instance
+        $date = $this->licence_expire_at instanceof \Carbon\Carbon 
+            ? $this->licence_expire_at 
+            : \Carbon\Carbon::parse($this->licence_expire_at);
+            
+        return $date->format('d/m/Y');
     }
 }

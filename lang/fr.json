@@ -75,5 +75,19 @@
     "I confirm the deactivation of my account": "Je confirme la désactivation de mon compte",
     "Deactivate account": "Désactiver le compte",
     "Profile updated successfully!": "Profil mis à jour avec succès !",
-    "Access denied. Only Super-Admins can access this section.": "Accès refusé. Seuls les Super-Admins peuvent accéder à cette section."
+    "Access denied. Only Super-Admins can access this section.": "Accès refusé. Seuls les Super-Admins peuvent accéder à cette section.",
+    "You do not have permission to access this resource": "Vous n'avez pas la permission d'accéder à cette ressource",
+    "Checkout": "Validation de la commande",
+    "Shipping & Payment": "Livraison & Paiement",
+    "Delivery Address": "Adresse de livraison",
+    "Enter your delivery address...": "Entrez votre adresse de livraison...",
+    "Order Notes (Optional)": "Notes de commande (Optionnel)",
+    "Any special instructions?": "Instructions spéciales ?",
+    "Payment Method": "Méthode de paiement",
+    "Wallet Balance": "Solde du Portefeuille",
+    "Pay securely with your wallet": "Payez en toute sécurité avec votre portefeuille",
+    "Mobile Money": "Mobile Money",
+    "Place Order": "Passer la commande",
+    "Order Summary": "Résumé de la commande",
+    "Total": "Total"
 }

@@ -13,8 +13,13 @@ class SellerDashboardController extends Controller
     
     public function index()
     {
+        \Illuminate\Support\Facades\Log::info('🎯 SellerDashboardController@index: REACHED!', [
+            'user_id' => auth()->id(),
+            'user_email' => auth()->user()?->email,
+        ]);
+        
         $stats = $this->sellerStatsService->getStats(auth()->id());
         
-        return view('pages.seller.dashboard', compact('stats'));
+        return view('seller::dashboard', compact('stats'));
     }
 }

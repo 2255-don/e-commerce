@@ -22,6 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Register feature access middleware alias (pour usage manuel si besoin)
         $middleware->alias([
             'feature' => CheckFeatureAccess::class,
+            'seller' => \App\Modules\Seller\Middleware\SellerMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -75,7 +75,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function cart()
     {
-        return $this->hasOne(\App\Models\Cart::class);
+        return $this->hasOne(\Modules\Marketplace\Entities\Cart::class);
     }
 
     public function wallet()
@@ -95,12 +95,12 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function profil()
     {
-        return $this->belongsTo(Profil::class, 'profil_id');
+        return $this->belongsTo(\Modules\Identity\Entities\Profil::class, 'profil_id');
     }
 
     public function roles()
     {
-        return $this->belongsToMany(Role::class, 'role_details', 'user_id', 'role_id')
+        return $this->belongsToMany(\Modules\Identity\Entities\Role::class, 'role_details', 'user_id', 'role_id')
             ->withTimestamps();
     }
 
@@ -125,7 +125,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function assignRole($roleSlug)
     {
-        $role = Role::where('slug', $roleSlug)->first();
+        $role = \Modules\Identity\Entities\Role::where('slug', $roleSlug)->first();
         if ($role && !$this->hasRole($roleSlug)) {
             $this->roles()->attach($role->id);
         }
@@ -137,7 +137,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function removeRole($roleSlug)
     {
-        $role = Role::where('slug', $roleSlug)->first();
+        $role = \Modules\Identity\Entities\Role::where('slug', $roleSlug)->first();
         if ($role) {
             $this->roles()->detach($role->id);
         }

@@ -89,6 +89,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(\Modules\Seller\Entities\SellerProfile::class);
     }
 
+    public function orders()
+    {
+        return $this->hasMany(\Modules\Marketplace\Entities\Order::class, 'buyer_id');
+    }
+
     public function profil()
     {
         return $this->belongsTo(Profil::class, 'profil_id');
