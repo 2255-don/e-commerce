@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Module;
 use Illuminate\Database\Seeder;
+use Modules\Identity\Entities\Module as EntitiesModule;
 
 class ModulesSeeder extends Seeder
 {
@@ -80,7 +81,7 @@ class ModulesSeeder extends Seeder
         ];
 
         foreach ($modules as $moduleData) {
-            Module::updateOrCreate(
+            EntitiesModule::updateOrCreate(
                 ['slug' => $moduleData['slug']],
                 $moduleData
             );
