@@ -28,6 +28,11 @@ class SellerController extends Controller
     {
         try {
             $user = Auth::user();
+
+            if ($user->isSuperAdmin()) {
+                return redirect()->route('profile.show')->withErrors(['error' => 'Les Super-Admins ne peuvent pas devenir vendeurs.']);
+            }
+
             $profile = $user->sellerProfile;
             $wallet = $user->wallet;
 
@@ -47,6 +52,11 @@ class SellerController extends Controller
     {
         try {
             $user = Auth::user();
+
+            if ($user->isSuperAdmin()) {
+                return redirect()->route('profile.show')->withErrors(['error' => 'Les Super-Admins ne peuvent pas devenir vendeurs.']);
+            }
+
             $wallet = $user->wallet;
 
             $this->paymentService->processPayment(

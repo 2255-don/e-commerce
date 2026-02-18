@@ -25,7 +25,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             ProfilSeeder::class,
             AdminUserSeeder::class,
+            PlatformWalletSeeder::class,
             CategorySeeder::class,
+            DonManuelSeeder::class,
         ]);
     }
 }

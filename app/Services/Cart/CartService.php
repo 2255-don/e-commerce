@@ -37,7 +37,7 @@ class CartService
         // Or better: Return Collection of items and adapt view.
         // Let's adapt to existing structure: id => [details]
         
-        $items = $cart->items()->with('product.seller.sellerProfile')->get();
+        $items = $cart->items()->with('product.seller')->get();
         $formatted = [];
 
         foreach ($items as $item) {
@@ -47,7 +47,7 @@ class CartService
                 'price' => $item->product->price,
                 'quantity' => $item->quantity,
                 'seller_id' => $item->product->seller_id,
-                'shop_name' => $item->product->seller->sellerProfile->shop_name ?? 'Vendeur',
+                'shop_name' => $item->product->seller->shop_name ?? 'Vendeur',
                 'image' => $item->product->thumbnail_url,
                 'max_stock' => $item->product->stock_quantity,
                 'cart_item_id' => $item->id
@@ -72,7 +72,8 @@ class CartService
         } else {
             $cart->items()->create([
                 'product_id' => $product->id,
-                'quantity' => $quantity
+                'quantity' => $quantity,
+                'price_at_addition' => $product->price
             ]);
         }
 

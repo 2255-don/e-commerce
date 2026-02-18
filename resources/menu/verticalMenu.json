@@ -13,7 +13,10 @@
       "name": "Parcourir",
       "icon": "menu-icon tf-icons ti ti-shopping-cart",
       "url": "boutique",
-      "slug": "marketplace.index"
+      "slug": [
+        "marketplace.index",
+        "checkout.index"
+      ]
     },
     {
       "menuHeader": "Mes Achats"
@@ -49,7 +52,21 @@
       "sellerOnly": true
     },
     {
+      "name": "Mes Commandes",
+      "icon": "menu-icon tf-icons ti ti-box",
+      "url": "seller/orders",
+      "slug": "seller.orders.index",
+      "sellerOnly": true
+    },
+    {
       "menuHeader": "Administration",
+      "adminOnly": true
+    },
+    {
+      "name": "Commandes",
+      "icon": "menu-icon tf-icons ti ti-file-analytics",
+      "url": "admin/orders",
+      "slug": "admin.orders.index",
       "adminOnly": true
     },
     {

@@ -27,7 +27,12 @@ class Product extends Model
 
     public function seller()
     {
-        return $this->belongsTo(User::class, 'seller_id');
+        return $this->belongsTo(SellerProfile::class, 'seller_id');
+    }
+
+    public function sellerUser()
+    {
+        return $this->hasOneThrough(User::class, SellerProfile::class, 'id', 'id', 'seller_id', 'user_id');
     }
 
     public function category()

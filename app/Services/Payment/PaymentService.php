@@ -53,4 +53,32 @@ class PaymentService
             ]);
         });
     }
+    /**
+     * Transfer funds from one wallet to another.
+     */
+    public function transfer(Wallet $senderWallet, Wallet $receiverWallet, float $amount, string $description)
+    {
+        return DB::transaction(function () use ($senderWallet, $receiverWallet, $amount, $description) {
+            if ($senderWallet->balance < $amount) {
+                throw new Exception("Solde insuffisant pour le transfert.");
+            }
+
+            // Deduct from sender
+            $senderWallet->decrement('balance', $amount);
+
+            // Add to receiver
+            $receiverWallet->increment('balance', $amount);
+
+            // Create transaction record
+            return Transaction::create([
+                'sender_wallet_id' => $senderWallet->id,
+                'receiver_wallet_id' => $receiverWallet->id,
+                'type' => 'transfer',
+                'amount' => $amount,
+                'reference' => 'TRF-' . strtoupper(Str::random(10)),
+                'description' => $description,
+                'status' => 'completed',
+            ]);
+        });
+    }
 }

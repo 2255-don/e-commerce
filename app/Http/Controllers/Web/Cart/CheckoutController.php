@@ -92,8 +92,11 @@ class CheckoutController extends Controller
             $total = $this->cartService->total();
 
             if (empty($cart)) {
+
                 return redirect()->route('marketplace.index');
             }
+
+            // dd($user, $cart, $total);
 
             // Execute Checkout
             $orderService->processCheckout($user, $cart, $total, $request->input('type', 'wallet'));

@@ -103,6 +103,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         
         Route::post('/{order}/confirm', [OrderHistoryController::class, 'confirmDelivery'])->name('confirm');
         Route::get('/{order}/receipt', [OrderHistoryController::class, 'downloadReceipt'])->name('download');
+        Route::post('/{order}/refund', [OrderHistoryController::class, 'reportIssue'])->name('refund');
     });
     
     // -------------------- SELLER --------------------
@@ -116,6 +117,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/dashboard', [SellerProductController::class, 'index'])->name('dashboard');
             Route::resource('products', SellerProductController::class);
             Route::delete('products/images/{productImageId}', [SellerProductController::class, 'destroyImage'])->name('products.images.destroy');
+            
+            // Orders Management
+            Route::get('/orders', [\App\Http\Controllers\Web\Seller\SellerOrderController::class, 'index'])->name('orders.index');
+            Route::post('/orders/{order}/ship', [\App\Http\Controllers\Web\Seller\SellerOrderController::class, 'markAsShipped'])->name('orders.ship');
         });
     });
     
@@ -151,6 +156,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('users', [\App\Http\Controllers\Admin\UserManagementController::class, 'index'])->name('users.index');
         Route::get('users/{user}/roles', [\App\Http\Controllers\Admin\UserManagementController::class, 'roles'])->name('users.roles');
         Route::post('users/{user}/roles', [\App\Http\Controllers\Admin\UserManagementController::class, 'updateRoles'])->name('users.roles.update');
+        
+        // Orders Management
+        Route::get('orders', [\App\Http\Controllers\Web\Admin\AdminOrderController::class, 'index'])->name('orders.index');
+        Route::post('/orders/{order}/refund', [App\Http\Controllers\Web\Admin\AdminOrderController::class, 'refund'])->name('orders.refund');
     });
     
 });

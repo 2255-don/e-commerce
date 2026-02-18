@@ -10,13 +10,20 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class OrderHistoryController extends Controller
 {
+    protected $orderService;
+
+    public function __construct(\App\Services\Order\OrderService $orderService)
+    {
+        $this->orderService = $orderService;
+    }
+
     /**
      * Display a listing of the user's orders.
      */
     public function index()
     {
         $orders = Order::where('buyer_id', '=', Auth::id())
-            ->where('status', 'delivered') // 'delivered' represents completed history
+            ->whereIn('status', ['completed', 'cancelled'])
             ->with(['items.product'])
             ->latest()
             ->paginate(10);
@@ -27,7 +34,7 @@ class OrderHistoryController extends Controller
     public function pending()
     {
         $orders = Order::where('buyer_id', '=', Auth::id())
-            ->whereIn('status', ['pending', 'paid', 'shipped']) // Show active orders not yet delivered
+            ->whereIn('status', ['pending', 'paid', 'pending_payment', 'shipped'])
             ->with(['items.product'])
             ->latest()
             ->paginate(10);
@@ -45,10 +52,11 @@ class OrderHistoryController extends Controller
             abort(403);
         }
 
-        $order->load(['items.product', 'items.product.seller.sellerProfile']);
+        $order->load(['items.product.sellerUser']);
 
-        // Identify seller for this order (assuming all items in an order belong to same seller per our design)
-        $sellerProfile = $order->items->first()->product->seller->sellerProfile ?? null;
+        // Identify seller for this order
+        $firstItem = $order->items->first();
+        $sellerProfile = $firstItem ? $firstItem->product->seller : null;
 
         return view('pages.user.orders.show', compact('order', 'sellerProfile'));
     }
@@ -62,28 +70,29 @@ class OrderHistoryController extends Controller
             abort(403);
         }
 
-        // Logic for COD: delivery validation also confirms payment receipt
-        // Logic for Paid: just confirms delivery
-        
-        $updateData = [
-            'delivery_status' => 'delivered'
-        ];
+        try {
+            $this->orderService->confirmOrder($order);
+            return back()->with('success', 'Réception confirmée ! Les fonds ont été libérés au vendeur.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
 
-        if ($order->payment_method === 'cash_on_delivery' && $order->status === 'pending') {
-            $updateData['status'] = 'paid'; // COD paid upon delivery
-        } elseif ($order->status !== 'delivered') {
-             // If not COD, status might already be paid, so we ensure it reflects delivery if needed, 
-             // but 'delivered' status usually implies completion in this schema context if 'completed' doesn't exist.
-             // Based on schema provided: enum('pending', 'paid', 'shipped', 'delivered'...)
-             $updateData['status'] = 'delivered';
+    /**
+     * Report an issue (Request Refund).
+     */
+    public function reportIssue(Order $order)
+    {
+        if ($order->buyer_id !== Auth::id()) {
+            abort(403);
         }
 
-        if ($order->delivery_status !== 'delivered') {
-            $order->update($updateData);
-            return back()->with('success', 'Livraison (et paiement) confirmée avec succès !');
+        try {
+            $this->orderService->refundOrder($order);
+            return back()->with('success', 'Votre signalement a été enregistré. Un administrateur va examiner votre demande.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()]);
         }
-
-        return back()->with('info', 'Cette commande est déjà validée.');
     }
 
     /**
@@ -96,10 +105,10 @@ class OrderHistoryController extends Controller
         }
 
         $order->load(['items.product', 'buyer']);
-        $sellerProfile = $order->items->first()->product->seller->sellerProfile ?? null;
+        $sellerProfile = $order->items->first()->product->seller ?? null;
 
         $pdf = Pdf::loadView('pdf.receipt', compact('order', 'sellerProfile'));
         
-        return $pdf->download('recu-commande-' . $order->id . '.pdf');
+        return $pdf->download('recu-commande-' . $order->delivery_code . '.pdf');
     }
 }

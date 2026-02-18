@@ -30,7 +30,12 @@ class ProductController extends Controller
             $user = Auth::user();
             $seller = $user->sellerProfile;
 
-            $products = Product::where('seller_id', $user->id)
+            // Fix: verify if seller profile exists (should be handled by middleware, but good to be safe)
+            if (!$seller) {
+                return redirect()->route('home')->withErrors(['error' => 'Profil vendeur introuvable.']);
+            }
+
+            $products = Product::where('seller_id', $seller->id)
                 ->with(['category', 'images'])
                 ->latest()
                 ->get();
@@ -52,7 +57,8 @@ class ProductController extends Controller
     {
         try {
             $categories = Category::all();
-            return view('pages.seller.product_form', compact('categories'));
+            $isEdit = false;
+            return view('pages.seller.product_form', compact('categories', 'isEdit'));
         } catch (Exception $e) {
             Log::error('Product Create Form Error: ' . $e->getMessage());
             return back();
@@ -97,12 +103,14 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         // Security check: Ensure product belongs to logged in seller
-        if ($product->seller_id !== Auth::id()) {
+        $seller = Auth::user()->sellerProfile;
+        if (!$seller || $product->seller_id !== $seller->id) {
             abort(403);
         }
 
         $categories = Category::all();
-        return view('pages.seller.product_form', compact('product', 'categories'));
+        $isEdit = true;
+        return view('pages.seller.product_form', compact('product', 'categories', 'isEdit'));
     }
 
     /**
@@ -110,7 +118,8 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        if ($product->seller_id !== Auth::id()) {
+        $seller = Auth::user()->sellerProfile;
+        if (!$seller || $product->seller_id !== $seller->id) {
             abort(403);
         }
         
@@ -123,7 +132,8 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         // Security check
-        if ($product->seller_id !== Auth::id()) {
+        $seller = Auth::user()->sellerProfile;
+        if (!$seller || $product->seller_id !== $seller->id) {
             abort(403);
         }
 
@@ -157,7 +167,8 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        if ($product->seller_id !== Auth::id()) {
+        $seller = Auth::user()->sellerProfile;
+        if (!$seller || $product->seller_id !== $seller->id) {
             abort(403);
         }
 
@@ -181,7 +192,8 @@ class ProductController extends Controller
             $product = $image->product;
 
             // Security check
-            if ($product->seller_id !== Auth::id()) {
+            $seller = Auth::user()->sellerProfile;
+            if (!$seller || $product->seller_id !== $seller->id) {
                 abort(403);
             }
 

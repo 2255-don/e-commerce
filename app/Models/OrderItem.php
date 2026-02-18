@@ -19,12 +19,15 @@ class OrderItem extends Model
     protected $fillable = [
         'order_id',
         'product_id',
+        'seller_id',
         'quantity',
-        'unit_price'
+        'price_at_purchase',
+        'subtotal'
     ];
 
     protected $casts = [
-        'unit_price' => 'decimal:2',
+        'price_at_purchase' => 'decimal:2',
+        'subtotal' => 'decimal:2',
         'quantity' => 'integer',
     ];
 
