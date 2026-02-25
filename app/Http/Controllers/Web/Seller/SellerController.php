@@ -68,7 +68,7 @@ class SellerController extends Controller
 
             $this->licenseService->activateLicense($user);
 
-            return redirect()->route('profile.show')->with('status', 'license-activated');
+            return redirect()->route('profile.show')->with('success', 'Licence vendeur activée avec succès.');
         } catch (Exception $e) {
             Log::error('Erreur lors de l\'achat de licence via Wallet : ' . $e->getMessage(), [
                 'user_id' => Auth::id(),

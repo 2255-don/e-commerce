@@ -4,7 +4,6 @@
 
 @section('vendor-style')
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/select2/select2.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.css') }}" />
 @endsection
 
 @section('page-style')
@@ -284,7 +283,6 @@
 
 @section('vendor-script')
     <script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
 @endsection
 
 @section('page-script')
@@ -324,16 +322,14 @@
                                 // Update Badge
                                 if (cartBadge) cartBadge.innerText = data.cartCount;
 
-                                // Show Success (Use SweetAlert if available or default alert)
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Ajouté !',
-                                    text: 'Produit ajouté au panier',
-                                    toast: true,
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 2000
-                                });
+                                // Show Success
+                                if (typeof toastr !== 'undefined') {
+                                    toastr.success('Produit ajouté au panier', 'Ajouté !', {
+                                        positionClass: 'toast-top-center',
+                                        timeOut: 3000,
+                                        progressBar: true
+                                    });
+                                }
                             }
                         })
                         .catch(error => console.error('Error:', error))

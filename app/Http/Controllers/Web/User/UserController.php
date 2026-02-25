@@ -58,9 +58,14 @@ class UserController extends Controller
                 $user->password = Hash::make($request->password);
             }
 
+            if ($request->hasFile('photo')) {
+                $path = $request->file('photo')->store('profile-photos', 'public');
+                $user->profile_photo_path = $path;
+            }
+
             $user->save();
 
-            return back()->with('status', 'profile-updated');
+            return back()->with('success', 'Profil mis à jour avec succès.');
         } catch (Exception $e) {
             Log::error('Erreur lors de la mise à jour du profil : ' . $e->getMessage(), [
                 'user_id' => Auth::id(),

@@ -77,7 +77,7 @@ class CartService
             ]);
         }
 
-        return $cart->items()->count();
+        return $cart->items()->sum('quantity');
     }
 
     /**

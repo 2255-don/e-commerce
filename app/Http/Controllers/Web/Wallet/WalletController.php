@@ -74,7 +74,7 @@ class WalletController extends Controller
                 'Rechargement Wallet via ' . ($data['provider'] ?? 'Mobile Money')
             );
 
-            return redirect()->route('profile.show')->with('status', 'wallet-recharged');
+            return redirect()->route('profile.show')->with('success', 'Portefeuille rechargé avec succès.');
 
         } catch (Exception $e) {
             Log::error('Erreur rechargement wallet: ' . $e->getMessage(), [
@@ -83,6 +83,48 @@ class WalletController extends Controller
             ]);
             
             // Return exception message directly (ex: "Solde insuffisant")
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Show withdrawal page.
+     */
+    public function showWithdraw()
+    {
+        $wallet = Auth::user()->wallet;
+        return view('pages.wallet.withdraw', compact('wallet'));
+    }
+
+    /**
+     * Process withdrawal.
+     */
+    public function processWithdraw(Request $request)
+    {
+        $validated = $request->validate([
+            'phone' => 'required|string',
+            'amount' => 'required|numeric|min:500', // Minimum withdrawal amount
+        ]);
+
+        try {
+            $user = Auth::user();
+            $wallet = $user->wallet;
+
+            if (!$wallet) {
+                return back()->withErrors(['error' => 'Portefeuille introuvable.']);
+            }
+
+            $this->paymentService->withdraw(
+                $wallet,
+                $validated['amount'],
+                $validated['phone'],
+                $this->mmService
+            );
+
+            return redirect()->route('profile.show')->with('success', 'Retrait effectué avec succès.');
+
+        } catch (Exception $e) {
+            Log::error('Erreur retrait wallet: ' . $e->getMessage());
             return back()->withErrors(['error' => $e->getMessage()]);
         }
     }

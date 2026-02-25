@@ -49,7 +49,7 @@ class KycController extends Controller
                 $request->shop_name
             );
 
-            return redirect()->route('profile.show')->with('status', 'kyc-submitted');
+            return redirect()->route('profile.show')->with('success', 'Demande KYC soumise avec succès.');
         } catch (Exception $e) {
             Log::error('KYC Submission Error: ' . $e->getMessage(), [
                 'user_id' => Auth::id()

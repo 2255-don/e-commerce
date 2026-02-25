@@ -79,6 +79,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('wallet')->name('wallet.')->group(function () {
         Route::get('/recharge', [WalletController::class, 'showRecharge'])->name('recharge');
         Route::post('/recharge', [WalletController::class, 'processRecharge'])->name('process-recharge');
+
+        // Withdrawal
+        Route::get('/withdraw', [WalletController::class, 'showWithdraw'])->name('withdraw');
+        Route::post('/withdraw', [WalletController::class, 'processWithdraw'])->name('process-withdraw');
     });
     
     // -------------------- CART & CHECKOUT --------------------
@@ -86,7 +90,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/', [CheckoutController::class, 'index'])->name('index');
         Route::get('/add/{productId}', [CheckoutController::class, 'add'])->name('add');
         Route::get('/details', [CheckoutController::class, 'cartDetails'])->name('details');
-        Route::post('/update', [CheckoutController::class, 'update'])->name('update');
+        Route::post('/update/{productId}', [CheckoutController::class, 'update'])->name('update');
         Route::get('/remove/{productId}', [CheckoutController::class, 'remove'])->name('remove');
     });
     

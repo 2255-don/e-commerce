@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/select2/select2.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/formvalidation/dist/css/formValidation.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/animate-css/animate.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.css') }}" />
 @endsection
 
 @section('page-style')
@@ -93,15 +92,16 @@
         }
 
         .btn-outline-gold {
-            border: 2px solid var(--gold-primary);
-            color: var(--gold-dark);
-            background: transparent;
+            border: 2px solid #D4AF37 !important;
+            color: #B5952F !important;
+            background: transparent !important;
             font-weight: 600;
         }
 
         .btn-outline-gold:hover {
-            background: var(--gold-primary);
-            color: white;
+            background: #D4AF37 !important;
+            color: white !important;
+            border-color: #D4AF37 !important;
         }
 
         /* Badges */
@@ -137,24 +137,6 @@
             </div>
         </div>
 
-        <!-- Messages -->
-        @if (session('status') === 'profile-updated')
-            <div class="alert alert-success alert-dismissible animate__animated animate__fadeInDown" role="alert">
-                <i class="ti ti-check me-2"></i> Profil mis à jour avec succès !
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-
-        @if ($errors->any())
-            <div class="alert alert-danger alert-dismissible animate__animated animate__shakeX" role="alert">
-                <ul class="mb-0">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
 
         <div class="row">
 
@@ -172,7 +154,7 @@
                             style="transform: translate(10%, 10%);" title="Changer la photo">
                             <i class="ti ti-camera text-white"></i>
                             <input type="file" id="upload" class="account-file-input" hidden
-                                accept="image/png, image/jpeg" />
+                                accept="image/png, image/jpeg" name="photo" form="formAccountSettings" />
                         </label>
                     </div>
 
@@ -228,9 +210,14 @@
                         <small class="text-muted text-uppercase fw-bold d-block mb-1">Portefeuille</small>
                         <h4 class="text-gold fw-bolder mb-2">{{ number_format($user->wallet->balance ?? 0, 0, ',', ' ') }}
                             FCFA</h4>
-                        <a href="{{ route('wallet.recharge') }}" class="btn btn-sm btn-outline-gold w-100">
-                            <i class="ti ti-plus me-1"></i> Recharger
-                        </a>
+                        <div class="d-flex gap-2">
+                            <a href="{{ route('wallet.recharge') }}" class="btn btn-sm btn-outline-gold w-100">
+                                <i class="ti ti-plus me-1"></i> Recharger
+                            </a>
+                            <a href="{{ route('wallet.withdraw') }}" class="btn btn-sm btn-outline-danger w-100">
+                                <i class="ti ti-minus me-1"></i> Retirer
+                            </a>
+                        </div>
                     </div>
 
                     @if (!($user->sellerProfile && $user->sellerProfile->isLicenseActive()))
@@ -263,7 +250,8 @@
             <div class="col-lg-8">
                 <div class="premium-card p-4 h-100">
 
-                    <form id="formAccountSettings" method="POST" action="{{ route('profile.update') }}">
+                    <form id="formAccountSettings" method="POST" action="{{ route('profile.update') }}"
+                        enctype="multipart/form-data">
                         @csrf
 
                         <!-- Personal Info Section -->
@@ -363,11 +351,13 @@
                             compte et retirera vos données de nos serveurs.</p>
                     </div>
                     <form id="formAccountDeactivation" onsubmit="return false" class="mt-3">
-                        <div class="form-check mb-3">
-                            <input class="form-check-input" type="checkbox" name="accountActivation"
-                                id="accountActivation" />
-                            <label class="form-check-label" for="accountActivation">Je confirme la suppression
-                                définitive</label>
+                        <div class="mb-3 form-check-wrapper">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="accountActivation"
+                                    id="accountActivation" />
+                                <label class="form-check-label" for="accountActivation">Je confirme la suppression
+                                    définitive</label>
+                            </div>
                         </div>
                         <div class="d-flex justify-content-end gap-2">
                             <button type="button" class="btn btn-label-secondary"
@@ -389,7 +379,6 @@
     <script src="{{ asset('assets/vendor/libs/formvalidation/dist/js/plugins/AutoFocus.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/cleavejs/cleave.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/cleavejs/cleave-phone.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
 @endsection
 
 @section('page-script')
@@ -405,9 +394,30 @@
                 });
             }
 
-            // Logic for file input (image preview) - kept from template
-            // (Assuming standard template JS handles the actual upload/preview logic using 'account-file-input' and 'account-image-reset' classes)
+            // Logic for file input (image preview)
+            const accountUserImage = document.getElementById('uploadedAvatar');
+            const fileInput = document.querySelector('.account-file-input');
+            const resetFileInput = document.querySelector('.account-image-reset');
+
+            if (accountUserImage) {
+                const resetImage = accountUserImage.src;
+
+                if (fileInput) {
+                    fileInput.onchange = () => {
+                        if (fileInput.files[0]) {
+                            accountUserImage.src = window.URL.createObjectURL(fileInput.files[0]);
+                        }
+                    };
+                }
+
+                if (resetFileInput) {
+                    resetFileInput.onclick = () => {
+                        fileInput.value = '';
+                        accountUserImage.src = resetImage;
+                    };
+                }
+            }
         });
     </script>
-    <script src="{{ asset('assets/js/pages-account-settings-account.js') }}"></script>
+    {{-- <script src="{{ asset('assets/js/pages-account-settings-account.js') }}"></script> --}}
 @endsection

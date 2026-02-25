@@ -15,6 +15,7 @@
       "url": "boutique",
       "slug": [
         "marketplace.index",
+        "marketplace.show",
         "checkout.index"
       ]
     },

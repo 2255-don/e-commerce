@@ -9,10 +9,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasUuids, TwoFactorAuthenticatable;
+    use HasFactory, Notifiable, HasUuids, TwoFactorAuthenticatable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -27,6 +29,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'profil_id',
         'kyc_status',
         'kyc_document_path',
+        'profile_photo_path',
     ];
 
     /**
@@ -59,6 +62,9 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getProfilePhotoUrlAttribute()
     {
+        if ($this->profile_photo_path) {
+            return asset('storage/' . $this->profile_photo_path);
+        }
         return 'https://ui-avatars.com/api/?name='.urlencode($this->name).'&color=7367f0&background=f8f7ff';
     }
 

@@ -4,14 +4,7 @@
 
 @section('vendor-style')
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/animate-css/animate.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.css') }}" />
-@endsection
-
-@section('vendor-script')
-    <script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
-@endsection
-
-@section('page-style')
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/animate-css/animate.css') }}" />
     <style>
         .premium-card {
             background: #ffffff;
@@ -94,37 +87,6 @@
             </div>
         </div>
 
-        @if (session('success'))
-            <div class="alert alert-success alert-dismissible d-flex align-items-baseline mb-3 animate__animated animate__fadeIn"
-                role="alert">
-                <span class="alert-icon alert-icon-lg text-success me-2">
-                    <i class="ti ti-check ti-sm"></i>
-                </span>
-                <div class="d-flex flex-column ps-1">
-                    <h5 class="alert-heading mb-2">Succès</h5>
-                    <p class="mb-0">{{ session('success') }}</p>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            </div>
-        @endif
-
-        @if ($errors->any())
-            <div class="alert alert-danger alert-dismissible d-flex align-items-baseline mb-3 animate__animated animate__fadeIn"
-                role="alert">
-                <span class="alert-icon alert-icon-lg text-danger me-2">
-                    <i class="ti ti-alert-triangle ti-sm"></i>
-                </span>
-                <div class="d-flex flex-column ps-1">
-                    <h5 class="alert-heading mb-2">Erreur</h5>
-                    <ul class="mb-0 ps-3">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            </div>
-        @endif
 
         <div class="premium-card animate__animated animate__fadeInUp">
             <div class="card-datatable table-responsive">

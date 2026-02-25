@@ -44,6 +44,37 @@ class CheckoutController extends Controller
     public function update(Request $request, $productId)
     {
         $this->cartService->update($productId, $request->quantity);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            // Recalculate everything to return in JSON
+            $cart = $this->cartService->getGroupedBySeller();
+            $total = $this->cartService->total();
+            
+            // Find the specific item and seller subtotal to send back
+            $itemTotal = 0;
+            $sellerSubtotal = 0;
+            $updatedQuantity = $request->quantity;
+
+            foreach ($cart as $groupId => $group) {
+                foreach ($group['items'] as $item) {
+                    if ($item['id'] == $productId) {
+                        $itemTotal = floatval($item['price']) * intval($item['quantity']);
+                        $sellerSubtotal = $group['subtotal'];
+                        $updatedQuantity = $item['quantity'];
+                        break 2;
+                    }
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'itemTotal' => $itemTotal,
+                'sellerSubtotal' => $sellerSubtotal,
+                'cartTotal' => $total,
+                'quantity' => $updatedQuantity
+            ]);
+        }
+
         return back();
     }
 

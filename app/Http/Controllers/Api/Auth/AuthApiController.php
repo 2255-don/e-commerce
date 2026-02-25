@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Exception;
 
+use Illuminate\Support\Facades\Password;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Str;
+
 class AuthApiController extends Controller
 {
     /**
@@ -116,5 +120,63 @@ class AuthApiController extends Controller
     public function me(Request $request)
     {
         return response()->json($request->user());
+    }
+    /**
+     * Send password reset link.
+     */
+    public function forgotPassword(Request $request)
+    {
+        $input = $request->only('email');
+
+        $validator = Validator::make($input, [
+            'email' => 'required|email'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $status = Password::sendResetLink($input);
+
+        if ($status === Password::RESET_LINK_SENT) {
+            return response()->json(['message' => __($status)]);
+        }
+
+        return response()->json(['errors' => ['email' => [__($status)]]], 422);
+    }
+
+    /**
+     * Reset user password.
+     */
+    public function resetPassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password)
+                ])->setRememberToken(Str::random(60));
+
+                $user->save();
+
+                event(new PasswordReset($user));
+            }
+        );
+
+        if ($status === Password::PASSWORD_RESET) {
+            return response()->json(['message' => __($status)]);
+        }
+
+        return response()->json(['errors' => ['email' => [__($status)]]], 422);
     }
 }

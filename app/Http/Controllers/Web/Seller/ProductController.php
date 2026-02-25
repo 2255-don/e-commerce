@@ -89,7 +89,7 @@ class ProductController extends Controller
                 $request->file('product_images') ?? []
             );
 
-            return redirect()->route('seller.dashboard')->with('status', 'product-created');
+            return redirect()->route('seller.dashboard')->with('success', 'Produit créé avec succès.');
 
         } catch (Exception $e) {
             Log::error('Product Store Error: ' . $e->getMessage());
@@ -154,7 +154,7 @@ class ProductController extends Controller
                 $request->file('product_images') ?? []
             );
 
-            return redirect()->route('seller.dashboard')->with('status', 'product-updated');
+            return redirect()->route('seller.dashboard')->with('success', 'Produit mis à jour avec succès.');
 
         } catch (Exception $e) {
             Log::error('Product Update Error: ' . $e->getMessage());
@@ -174,7 +174,7 @@ class ProductController extends Controller
 
         try {
             $this->productService->deleteProduct($product);
-            return back()->with('status', 'product-deleted');
+            return back()->with('success', 'Produit supprimé avec succès.');
         } catch (Exception $e) {
             Log::error('Product Delete Error: ' . $e->getMessage());
             return back()->withErrors(['error' => 'Erreur lors de la suppression.']);
@@ -204,7 +204,7 @@ class ProductController extends Controller
 
             $image->delete();
 
-            return back()->with('status', 'image-deleted');
+            return back()->with('success', 'Image supprimée avec succès.');
         } catch (Exception $e) {
             Log::error('Image Delete Error: ' . $e->getMessage());
             return back()->withErrors(['error' => 'Erreur lors de la suppression de l\'image.']);

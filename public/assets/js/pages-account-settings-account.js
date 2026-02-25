@@ -14,17 +14,20 @@ document.addEventListener('DOMContentLoaded', function (e) {
     if (formAccSettings) {
       const fv = FormValidation.formValidation(formAccSettings, {
         fields: {
-          firstName: {
+          name: {
             validators: {
               notEmpty: {
-                message: 'Please enter first name'
+                message: 'Veuillez entrer votre nom complet'
               }
             }
           },
-          lastName: {
+          email: {
             validators: {
               notEmpty: {
-                message: 'Please enter last name'
+                message: 'Veuillez entrer votre email'
+              },
+              emailAddress: {
+                message: 'Veuillez entrer une adresse email valide'
               }
             }
           }
@@ -37,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
           }),
           submitButton: new FormValidation.plugins.SubmitButton(),
           // Submit the form when all fields are valid
-          // defaultSubmit: new FormValidation.plugins.DefaultSubmit(),
+          defaultSubmit: new FormValidation.plugins.DefaultSubmit(),
           autoFocus: new FormValidation.plugins.AutoFocus()
         },
         init: instance => {
@@ -64,17 +67,18 @@ document.addEventListener('DOMContentLoaded', function (e) {
         plugins: {
           trigger: new FormValidation.plugins.Trigger(),
           bootstrap5: new FormValidation.plugins.Bootstrap5({
-            eleValidClass: ''
+            eleValidClass: '',
+            rowSelector: '.form-check-wrapper'
           }),
           submitButton: new FormValidation.plugins.SubmitButton(),
           fieldStatus: new FormValidation.plugins.FieldStatus({
             onStatusChanged: function (areFieldsValid) {
               areFieldsValid
                 ? // Enable the submit button
-                  // so user has a chance to submit the form again
-                  deactivateButton.removeAttribute('disabled')
+                // so user has a chance to submit the form again
+                deactivateButton.removeAttribute('disabled')
                 : // Disable the submit button
-                  deactivateButton.setAttribute('disabled', 'disabled');
+                deactivateButton.setAttribute('disabled', 'disabled');
             }
           }),
           // Submit the form when all fields are valid
@@ -160,15 +164,21 @@ document.addEventListener('DOMContentLoaded', function (e) {
 
     if (accountUserImage) {
       const resetImage = accountUserImage.src;
-      fileInput.onchange = () => {
-        if (fileInput.files[0]) {
-          accountUserImage.src = window.URL.createObjectURL(fileInput.files[0]);
-        }
-      };
-      resetFileInput.onclick = () => {
-        fileInput.value = '';
-        accountUserImage.src = resetImage;
-      };
+
+      if (fileInput) {
+        fileInput.onchange = () => {
+          if (fileInput.files[0]) {
+            accountUserImage.src = window.URL.createObjectURL(fileInput.files[0]);
+          }
+        };
+      }
+
+      if (resetFileInput) {
+        resetFileInput.onclick = () => {
+          fileInput.value = '';
+          accountUserImage.src = resetImage;
+        };
+      }
     }
   })();
 });

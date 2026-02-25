@@ -315,4 +315,51 @@ class MobileMoneyService
             default => 'Scénario inconnu'
         };
     }
+    /**
+     * Simulate a Payout (Withdrawal) to a Mobile Money number.
+     * 
+     * @param string $phone User's phone number
+     * @param float $amount Amount to send
+     * @param string|null $provider (Optional)
+     */
+    public function processPayout(string $phone, float $amount, ?string $provider = null): array
+    {
+        // Reuse logic for normalization & validation
+        $phone = $this->normalizePhoneNumber($phone);
+        if (!$provider) {
+            $provider = $this->detectProvider($phone);
+        }
+
+        if (!isset(self::PROVIDERS[$provider])) {
+            throw new Exception("Opérateur mobile non supporté.");
+        }
+
+        $this->validatePhoneNumber($phone, $provider);
+
+        // Simulate network delay
+        $scenario = $this->getTestScenario($phone);
+        $this->simulateNetworkDelay($scenario);
+
+        // Handle failure scenarios
+        if (in_array($scenario, ['network_error', 'account_blocked'])) {
+            $this->handleScenario($scenario, $provider, $phone, $amount); // Will throw exception
+        }
+
+        // Success Generation
+        $providerName = self::PROVIDERS[$provider]['name'];
+        $transactionId = $this->generateTransactionId($provider);
+        $reference = 'PAYOUT-' . strtoupper(Str::random(10));
+
+        return [
+            'status' => 'success',
+            'transaction_id' => $transactionId,
+            'reference' => $reference,
+            'provider' => $providerName,
+            'phone' => $phone,
+            'amount' => $amount,
+            // Fees are usually paid by sender (Platform), so user receives full amount
+            // or paid by receiver? Let's assume User receives full requested amount.
+            'message' => "Transfert de " . number_format($amount, 0, ',', ' ') . " FCFA vers {$phone} effectué avec succès."
+        ];
+    }
 }

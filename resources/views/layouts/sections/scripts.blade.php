@@ -6,6 +6,7 @@
 <script src="{{ asset('assets/vendor/libs/node-waves/node-waves.js') }}"></script>
 <script src="{{ asset('assets/vendor/libs/hammer/hammer.js') }}"></script>
 <script src="{{ asset('assets/vendor/libs/typeahead-js/typeahead.js') }}"></script>
+<script src="{{ asset('assets/vendor/libs/toastr/toastr.js') }}"></script>
 <script src="{{ asset('assets/vendor/js/menu.js') }}"></script>
 @yield('vendor-script')
 <!-- END: Page Vendor JS-->
@@ -18,4 +19,7 @@
 <!-- END: Pricing Modal JS-->
 <!-- BEGIN: Page JS-->
 @yield('page-script')
+
+<!-- Global Flash Toasts -->
+@include('layouts.sections.flash-toasts')
 <!-- END: Page JS-->

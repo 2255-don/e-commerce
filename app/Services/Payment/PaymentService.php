@@ -81,4 +81,34 @@ class PaymentService
             ]);
         });
     }
+    /**
+     * Handle withdrawal from wallet (to Mobile Money).
+     */
+    public function withdraw(Wallet $senderWallet, float $amount, string $phone, \App\Services\Payment\MobileMoneyService $mmService)
+    {
+        return DB::transaction(function () use ($senderWallet, $amount, $phone, $mmService) {
+            
+            // 1. Check Balance
+            if ($senderWallet->balance < $amount) {
+                throw new Exception("Solde insuffisant pour le retrait.");
+            }
+
+            // 2. Call Mobile Money Service (Simulate Transfer)
+            // If this fails, exception is thrown and transaction rolls back
+            $payoutResult = $mmService->processPayout($phone, $amount);
+
+            // 3. Deduct from Wallet
+            $senderWallet->decrement('balance', $amount);
+
+            // 4. Record Transaction
+            return Transaction::create([
+                'sender_wallet_id' => $senderWallet->id,
+                'type' => 'withdrawal',
+                'amount' => $amount,
+                'reference' => $payoutResult['reference'], // Use MM reference
+                'description' => $payoutResult['message'],
+                'status' => 'completed',
+            ]);
+        });
+    }
 }

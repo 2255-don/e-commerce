@@ -50,7 +50,7 @@ class KycController extends Controller
 
         try {
             $this->kycService->updateStatus($user, 'verified');
-            return back()->with('status', 'kyc-approved');
+            return back()->with('success', 'Document KYC approuvé avec succès.');
         } catch (Exception $e) {
             Log::error('Admin KYC Approve Error: ' . $e->getMessage());
             return back()->withErrors(['error' => 'Erreur lors de la validation.']);
@@ -68,7 +68,7 @@ class KycController extends Controller
 
         try {
             $this->kycService->updateStatus($user, 'rejected');
-            return back()->with('status', 'kyc-rejected');
+            return back()->with('success', 'Document KYC rejeté avec succès.');
         } catch (Exception $e) {
             Log::error('Admin KYC Reject Error: ' . $e->getMessage());
             return back()->withErrors(['error' => 'Erreur lors du rejet.']);

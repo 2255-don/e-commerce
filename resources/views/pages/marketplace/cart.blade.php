@@ -54,6 +54,13 @@
             border-radius: 8px;
             font-weight: 600;
             color: #1a1a1a;
+            -moz-appearance: textfield;
+        }
+
+        .quantity-input::-webkit-outer-spin-button,
+        .quantity-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
 
         .quantity-input:focus {
@@ -100,35 +107,6 @@
             </a>
         </div>
 
-        @if (session('success'))
-            <div class="alert alert-success alert-dismissible d-flex align-items-baseline" role="alert">
-                <span class="alert-icon alert-icon-lg text-success me-2">
-                    <i class="ti ti-check ti-sm"></i>
-                </span>
-                <div class="d-flex flex-column ps-1">
-                    <h5 class="alert-heading mb-2">Succès</h5>
-                    <p class="mb-0">{{ session('success') }}</p>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            </div>
-        @endif
-
-        @if ($errors->any())
-            <div class="alert alert-danger alert-dismissible d-flex align-items-baseline" role="alert">
-                <span class="alert-icon alert-icon-lg text-danger me-2">
-                    <i class="ti ti-alert-triangle ti-sm"></i>
-                </span>
-                <div class="d-flex flex-column ps-1">
-                    <h5 class="alert-heading mb-2">Erreur</h5>
-                    <ul class="mb-0 ps-3">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            </div>
-        @endif
 
         <div class="row">
             <!-- Cart Items -->
@@ -181,29 +159,29 @@
                                                             {{ number_format($item['price'], 0, ',', ' ') }} FCFA</div>
                                                     </td>
                                                     <td style="width: 140px;">
-                                                        <form action="{{ route('checkout.update', $item['id']) }}"
-                                                            method="POST"
-                                                            class="d-flex align-items-center bg-lighter rounded p-1">
-                                                            @csrf
-                                                            <button type="button" onclick="decrement(this)"
+                                                        <div class="d-flex align-items-center bg-lighter rounded p-1">
+                                                            <button type="button"
+                                                                onclick="updateQuantityAjax('{{ $item['id'] }}', -1, {{ $item['max_stock'] }})"
                                                                 class="btn btn-icon btn-sm btn-text-secondary rounded-pill">
                                                                 <i class="ti ti-minus"></i>
                                                             </button>
-                                                            <input type="number" name="quantity"
+                                                            <input type="number" id="qty-{{ $item['id'] }}"
                                                                 value="{{ $item['quantity'] }}" min="1"
                                                                 max="{{ $item['max_stock'] }}"
-                                                                class="form-control form-control-sm border-0 text-center shadow-none bg-transparent fw-bold"
-                                                                style="width: 40px;" onchange="this.form.submit()">
+                                                                class="form-control form-control-sm border-0 text-center shadow-none bg-transparent fw-bold quantity-input px-1"
+                                                                style="width: 50px;"
+                                                                onchange="updateQuantityAjax('{{ $item['id'] }}', this.value - this.defaultValue, {{ $item['max_stock'] }}, this.value)"
+                                                                data-default="{{ $item['quantity'] }}">
                                                             <button type="button"
-                                                                onclick="increment(this, {{ $item['max_stock'] }})"
+                                                                onclick="updateQuantityAjax('{{ $item['id'] }}', 1, {{ $item['max_stock'] }})"
                                                                 class="btn btn-icon btn-sm btn-text-secondary rounded-pill">
                                                                 <i class="ti ti-plus"></i>
                                                             </button>
-                                                        </form>
+                                                        </div>
                                                     </td>
                                                     <td class="text-end fw-bold" style="padding-right: 1.5rem;">
                                                         <div class="d-flex flex-column align-items-end">
-                                                            <span
+                                                            <span id="item-total-{{ $item['id'] }}"
                                                                 style="font-size: 1.1rem;">{{ number_format($item['price'] * $item['quantity'], 0, ',', ' ') }}
                                                                 FCFA</span>
                                                             <a href="{{ route('checkout.remove', $item['id']) }}"
@@ -220,7 +198,7 @@
                                 </div>
                                 <div class="border-top p-3 bg-lighter d-flex justify-content-end align-items-center">
                                     <span class="text-muted me-3">Sous-total vendeur :</span>
-                                    <span
+                                    <span id="seller-subtotal-{{ $sellerId }}"
                                         class="fw-bold fs-5 text-dark">{{ number_format($group['subtotal'], 0, ',', ' ') }}
                                         FCFA</span>
                                 </div>
@@ -238,7 +216,7 @@
 
                     <div class="summary-row">
                         <span>Sous-total</span>
-                        <span class="fw-semibold">{{ number_format($total, 0, ',', ' ') }} FCFA</span>
+                        <span class="fw-semibold cart-subtotal">{{ number_format($total, 0, ',', ' ') }} FCFA</span>
                     </div>
                     <div class="summary-row">
                         <span>Livraison</span>
@@ -251,7 +229,8 @@
 
                     <div class="summary-row summary-total">
                         <span class="fw-bold fs-5 text-dark">Total à payer</span>
-                        <span class="fw-bold fs-4 text-gold">{{ number_format($total, 0, ',', ' ') }} FCFA</span>
+                        <span class="fw-bold fs-4 text-gold cart-total">{{ number_format($total, 0, ',', ' ') }}
+                            FCFA</span>
                     </div>
 
                     @if (!empty($cart))
@@ -284,7 +263,8 @@
                             </div>
 
                             <button type="submit" class="btn btn-gold w-100 py-3 shadow-lg">
-                                <i class="ti ti-lock me-2"></i> Payer {{ number_format($total, 0, ',', ' ') }} FCFA
+                                <i class="ti ti-lock me-2"></i> Payer <span
+                                    class="cart-btn-total">{{ number_format($total, 0, ',', ' ') }}</span> FCFA
                             </button>
                         </form>
 
@@ -302,21 +282,68 @@
     </div>
 
     <script>
-        function increment(btn, max) {
-            let input = btn.previousElementSibling;
-            let val = parseInt(input.value);
-            if (val < max) {
-                input.value = val + 1;
-                input.dispatchEvent(new Event('change'));
-            }
+        function formatMoney(amount) {
+            return new Intl.NumberFormat('fr-FR').format(amount).replace(/\s/g, ' ');
         }
 
-        function decrement(btn) {
-            let input = btn.nextElementSibling;
-            let val = parseInt(input.value);
-            if (val > 1) {
-                input.value = val - 1;
-                input.dispatchEvent(new Event('change'));
+        async function updateQuantityAjax(productId, change, max, exactValue = null) {
+            let input = document.getElementById(`qty-${productId}`);
+            let currentQty = parseInt(input.value);
+            let newQty = exactValue !== null ? parseInt(exactValue) : currentQty + change;
+
+            if (newQty < 1 || newQty > max) return;
+
+            // Set optimistically
+            input.value = newQty;
+            input.setAttribute('data-default', newQty);
+
+            try {
+                let response = await fetch(`/cart/update/${productId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        quantity: newQty
+                    })
+                });
+
+                let data = await response.json();
+
+                if (data.success) {
+                    // Update Item Total
+                    let itemTotalEl = document.getElementById(`item-total-${productId}`);
+                    if (itemTotalEl) itemTotalEl.innerText = formatMoney(data.itemTotal) + ' FCFA';
+
+                    // Update Seller Subtotals (might be multiple on page if rendering bug, better to loop grouped items eventually if needed. For now assuming structured right)
+                    // We need seller group id to perfectly map it. But easiest way is fetching all subtotal spans and mapping if we assigned them correctly. 
+                    // To do this perfectly we need to ensure the group loop has access to sellerId. We added ID: seller-subtotal-sellerId.
+                    // Wait, our backend doesn't output which SellerId was changed. Let's fix that or rely on page reload on failure. 
+                    // Let's just reload page if totals get out of sync, or we can just update the specific seller subtotal if we returned it. 
+                    // Actually, simpler: reload the page structure since updating quantities in multiple carts might be tricky.
+                    // Wait, we DO return sellerSubtotal. We just need to find the closest wrapper.
+                    let rowWrapper = input.closest('.premium-card');
+                    if (rowWrapper) {
+                        let subtotalSpan = rowWrapper.querySelector('[id^="seller-subtotal-"]');
+                        if (subtotalSpan) subtotalSpan.innerText = formatMoney(data.sellerSubtotal) + ' FCFA';
+                    }
+
+                    // Update Cart Totals
+                    document.querySelectorAll('.cart-subtotal').forEach(el => el.innerText = formatMoney(data
+                        .cartTotal) + ' FCFA');
+                    document.querySelectorAll('.cart-total').forEach(el => el.innerText = formatMoney(data.cartTotal) +
+                        ' FCFA');
+                    document.querySelectorAll('.cart-btn-total').forEach(el => el.innerText = formatMoney(data
+                        .cartTotal));
+                } else {
+                    // Revert input gracefully
+                    input.value = currentQty;
+                }
+            } catch (error) {
+                console.error("Erreur de mise à jour: ", error);
+                input.value = currentQty; // Revert
             }
         }
     </script>

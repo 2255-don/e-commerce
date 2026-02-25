@@ -155,31 +155,7 @@
         <span class="text-muted fw-light">Mon Compte /</span> Commande #{{ $order->delivery_code }}
     </h4>
 
-    @if (session('success'))
-        <div class="alert alert-success alert-dismissible d-flex align-items-baseline" role="alert">
-            <span class="alert-icon alert-icon-lg text-success me-2"><i class="ti ti-check ti-sm"></i></span>
-            <div class="d-flex flex-column ps-1">
-                <h5 class="alert-heading mb-2">Succès</h5>
-                <p class="mb-0">{{ session('success') }}</p>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        </div>
-    @endif
 
-    @if ($errors->any())
-        <div class="alert alert-danger alert-dismissible d-flex align-items-baseline" role="alert">
-            <span class="alert-icon alert-icon-lg text-danger me-2"><i class="ti ti-alert-triangle ti-sm"></i></span>
-            <div class="d-flex flex-column ps-1">
-                <h5 class="alert-heading mb-2">Erreur</h5>
-                <ul class="mb-0 ps-3">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        </div>
-    @endif
 
     <div class="row">
         <!-- Order Progress & Details -->
@@ -207,20 +183,11 @@
 
                         <!-- Step 2: Shipped -->
                         <div
-                            class="col tracking-item {{ in_array($order->delivery_status, ['shipped', 'delivered']) ? 'active' : '' }}">
+                            class="col tracking-item {{ in_array($order->delivery_status, ['shipped', 'dispute', 'delivered']) ? 'active' : '' }}">
                             <div class="tracking-icon"><i class="ti ti-truck"></i></div>
                             <div class="tracking-title">Expédiée</div>
                             @if ($order->delivery_status != 'pending')
                                 <div class="tracking-date">En route</div>
-                            @endif
-                        </div>
-
-                        <!-- Step 3: Delivered -->
-                        <div class="col tracking-item {{ $order->delivery_status == 'delivered' ? 'active' : '' }}">
-                            <div class="tracking-icon"><i class="ti ti-package"></i></div>
-                            <div class="tracking-title">Livrée</div>
-                            @if ($order->delivery_status == 'delivered')
-                                <div class="tracking-date">Reçu</div>
                             @endif
                         </div>
 
@@ -234,6 +201,17 @@
                         @else
                             <!-- Dummy last step for visual balance if not dispute -->
                         @endif
+
+                        <!-- Step 3: Delivered -->
+                        <div class="col tracking-item {{ $order->delivery_status == 'delivered' ? 'active' : '' }}">
+                            <div class="tracking-icon"><i class="ti ti-package"></i></div>
+                            <div class="tracking-title">Livrée</div>
+                            @if ($order->delivery_status == 'delivered')
+                                <div class="tracking-date">Reçu</div>
+                            @endif
+                        </div>
+
+
                     </div>
                 </div>
             </div>
